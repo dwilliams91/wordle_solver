@@ -1,9 +1,8 @@
 #%%
-from re import L
 from sample_wordle import sample_list
+# import random from numpy
 
-
-def solve_worldle(sample_list):
+def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
     for letter in alphabet:
@@ -49,6 +48,7 @@ def solve_worldle(sample_list):
     best_fourth=find_top_5(letter_dictionary_fourth)
     best_fifth=find_top_5(letter_dictionary_fifth)
     return [best_first, best_second, best_third, best_fourth, best_fifth]
+# this returns a 5X5 list of the 5 most common letter in each spot
 
 
 # %%
@@ -111,22 +111,22 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sam
     
     return modified_sample_list
 
-correct_position_letters_dict={
-     4:"s"
-}
-incorrect_position_letters={
-    3:"e"
-}
-incorrect_letters={
-    0:"c",
-    1:"o",
-    2:"r"
+# correct_position_letters_dict={
+#      4:"s"
+# }
+# incorrect_position_letters={
+#     3:"e"
+# }
+# incorrect_letters={
+#     0:"c",
+#     1:"o",
+#     2:"r"
 
-}
-#%%
-# refined_list=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list)
-# best_first, best_second, best_third, best_fourth, best_fifth=solve_worldle(refined_list)
-best_letters_to_guess=solve_worldle(sample_list)
+# }
+# #%%
+# # refined_list=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list)
+# # best_first, best_second, best_third, best_fourth, best_fifth=solve_worldle(refined_list)
+# best_letters_to_guess=solve_worldle(sample_list)
 # best_first, best_second, best_third, best_fourth, best_fifth=best_letters_to_guess
 # print("best first letter", best_first)
 # print("best second letter", best_second)
@@ -152,56 +152,55 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
                 current_best_letter=best_positional_letter[0]
 
 
-    # print(current_best_number)
-    # print(current_best_letter)
+   
     return {
         current_best_letter_position:current_best_letter
     }
 
-def Sort_Tuple(tup): 
-    # getting length of list of tuples
-    lst = len(tup) 
-    for i in range(0, lst): 
-          
-        for j in range(0, lst-i-1): 
-            if (tup[j][1] > tup[j + 1][1]): 
-                temp = tup[j] 
-                tup[j]= tup[j + 1] 
-                tup[j + 1]= temp 
-    return tup 
-# letter_to_refine=find_best_letter_to_guess(best_letters_to_guess, ["s"])
-# narrowed_guess=refine_list()
+
 
 
 # %%
 def make_guess(list_of_words):
     # initial list
     list_of_letters_guessed=[]
-    best_letter_1=find_best_letter_to_guess(solve_worldle(list_of_words),[])
+    best_5_letters_to_guess=best_5_letters_in_each_spot(list_of_words)
+    print("FIRST", best_5_letters_to_guess)
+
+    best_letter_1=find_best_letter_to_guess(best_5_letters_to_guess,[])
     item_to_append=list(best_letter_1.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_first_letter=refine_list(best_letter_1,{}, {}, list_of_words)
 
     # second letter
-    best_letter_2=find_best_letter_to_guess(solve_worldle(list_after_first_letter),list_of_letters_guessed)
+    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_first_letter)
+    print("SECOND", best_5_letters_to_guess)
+
+    best_letter_2=find_best_letter_to_guess(best_5_letters_to_guess, list_of_letters_guessed)
     item_to_append=list(best_letter_2.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_second_letter=refine_list(best_letter_2,{}, {}, list_after_first_letter)
     
     # third letter
-    best_letter_3=find_best_letter_to_guess(solve_worldle(list_after_second_letter),list_of_letters_guessed)
+    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_second_letter)
+    print("THIRD", best_5_letters_to_guess)
+    best_letter_3=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
     item_to_append=list(best_letter_3.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_third_letter=refine_list(best_letter_3,{}, {}, list_after_second_letter)
 
     # forth letter
-    best_letter_4=find_best_letter_to_guess(solve_worldle(list_after_third_letter),list_of_letters_guessed)
+    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_third_letter)
+    print("FORTH", best_5_letters_to_guess)
+    best_letter_4=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
     item_to_append=list(best_letter_4.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_forth_letter=refine_list(best_letter_4,{}, {}, list_after_third_letter)
 
     # 5th letter
-    best_letter_5=find_best_letter_to_guess(solve_worldle(list_after_forth_letter),list_of_letters_guessed)
+    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_forth_letter)
+    print("FIFTH", best_5_letters_to_guess)
+    best_letter_5=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
     item_to_append=list(best_letter_5.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_fifth_letter=refine_list(best_letter_5,{}, {}, list_after_forth_letter)
@@ -216,33 +215,7 @@ guess=make_guess(sample_list)
 print(guess)
 
 
+#%%
 
-# what the data looks like
-# [
-# [('c', 410), ('b', 383), ('a', 243), ('s', 193), ('f', 184)],
-#  [('o', 385), ('a', 368), ('r', 274), ('e', 272), ('i', 261)], 
-# [('a', 298), ('i', 257), ('o', 235), ('r', 205), ('e', 191)], 
-# [('e', 509), ('t', 178), ('n', 172), ('l', 171), ('a', 140)], 
-# [('s', 728), ('e', 327), ('y', 220), ('t', 197), ('r', 164)]
-# ]
-
-# option 1- refine the list down to one word 
-# 1) find the most important letter to guess and its position: s as the 5th letter with 728
-# 2) go through sample list and eliminate all words that don't have the letter in that spot
-
-# 3) find the next most important: e as the 4th letter with 509. 
-# 4) go through and make sure that there are words left with that letter in that spot
-# 5) if there are no words of that letter in that spot left, find the next best letter: o as 385
-# 6) remove sample list and elimate all words that don't have the letter in that spot
-# 7) repeat steps 3-6 until you have filled in all 5 letters, thus finding the most likely best word to guess
-# note: it won't always be the first letter. The first guess would be S in 5, E in 4, C in 1, O in 2, but R in 3 to make the word CORES
-
-# 
-
-# option 2- make the best score
-# 1)
-
-
-    # option 3- try to get the most correct letters in the incorrect spots
 
 # %%
