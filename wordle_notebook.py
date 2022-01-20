@@ -2,6 +2,7 @@
 from sample_wordle import sample_list
 # import random from numpy
 
+# this returns a 5X5 list of the 5 most common letter in each spot
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
@@ -48,10 +49,10 @@ def best_5_letters_in_each_spot(sample_list):
     best_fourth=find_top_5(letter_dictionary_fourth)
     best_fifth=find_top_5(letter_dictionary_fifth)
     return [best_first, best_second, best_third, best_fourth, best_fifth]
-# this returns a 5X5 list of the 5 most common letter in each spot
 
 
 # %%
+# this refines the list depending on the guess. 
 def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sample_list=None):
     green_remove_list=[]
     yellow_remove_list=[]
@@ -111,6 +112,7 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sam
     
     return modified_sample_list
 
+# sample data
 # correct_position_letters_dict={
 #      4:"s"
 # }
@@ -122,19 +124,8 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sam
 #     1:"o",
 #     2:"r"
 
-# }
-# #%%
-# # refined_list=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list)
-# # best_first, best_second, best_third, best_fourth, best_fifth=solve_worldle(refined_list)
-# best_letters_to_guess=solve_worldle(sample_list)
-# best_first, best_second, best_third, best_fourth, best_fifth=best_letters_to_guess
-# print("best first letter", best_first)
-# print("best second letter", best_second)
-# print("best third letter",best_third)
-# print("best fourth letter",best_fourth)
-# print("best fifth letter",best_fifth)
 
-
+# this looks through the top 5X5 list, and finds the best letter
 def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
     current_best_number=0
     current_best_letter_position=0
