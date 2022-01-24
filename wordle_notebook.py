@@ -1,7 +1,6 @@
 #%%
 from sample_wordle import sample_list
 # import random from numpy
-
 # this returns a 5X5 list of the 5 most common letter in each spot
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -51,9 +50,8 @@ def best_5_letters_in_each_spot(sample_list):
     return [best_first, best_second, best_third, best_fourth, best_fifth]
 
 
-# %%
 # this refines the list depending on the guess. 
-def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sample_list=None):
+def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_list=None):
     green_remove_list=[]
     yellow_remove_list=[]
     black_remove_list=[]
@@ -61,15 +59,11 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sam
     correct_key_list_position=list(green_letters.keys())
     incorrect_key_list_position=list(yellow_letters.keys())
     incorrect_values_list=yellow_letters.values()
-
     black_letters_list=black_letters.values()
 
-
-    modified_sample_list=sample_list
-
     if len(green_letters) !=0:
-        for x in range(0,len(sample_list)):
-            word=sample_list[x]
+        for x in range(0,len(my_list)):
+            word=my_list[x]
             need_to_be_removed=False
             # if the right letter is in the right spot
             for position in correct_key_list_position:
@@ -83,46 +77,41 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, sam
                     break
             if need_to_be_removed:
                 green_remove_list.append(word)
-
-        for word in green_remove_list:
-            modified_sample_list.remove(word)
+    remove_not_greens=(set(my_list)-set(green_remove_list))
 
     # taking out words that don't contain the letters 
-    for word in sample_list:
+    for word in my_list:
         for letter in incorrect_values_list:
             if letter not in word:
                 yellow_remove_list.append(word)
     
-    for word in yellow_remove_list:
-        if word in modified_sample_list:
-            modified_sample_list.remove(word)
+    remove_not_yellow=(set(remove_not_greens)-set(yellow_remove_list))
 
-    #take out words that dont have black letters
-    for x in range(0,len(sample_list)):
-        word=sample_list[x]
+
+    # #take out words that dont have black letters
+    for x in range(0,len(my_list)):
+        word=my_list[x]
         for letter in word:
             if letter in black_letters_list:
                 black_remove_list.append(word)
     
-    for word in black_remove_list:
-        if word in modified_sample_list:
-            modified_sample_list.remove(word)
+    remove_black_letters=(set(remove_not_yellow)-set(black_remove_list))
 
 
     
-    return modified_sample_list
+    return list(remove_black_letters)
 
 # sample data
 # correct_position_letters_dict={
-#      4:"s"
+#    4:"s"
 # }
 # incorrect_position_letters={
-#     3:"e"
+    
 # }
 # incorrect_letters={
-#     0:"c",
-#     1:"o",
-#     2:"r"
+   
+# }
+# testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
 
 
 # this looks through the top 5X5 list, and finds the best letter
@@ -155,56 +144,66 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
 def make_guess(list_of_words):
     # initial list
     list_of_letters_guessed=[]
-    best_5_letters_to_guess=best_5_letters_in_each_spot(list_of_words)
-    print("FIRST", best_5_letters_to_guess)
+    position_of_letters_guessed=[]
+    best_5_letters_to_guess_1=best_5_letters_in_each_spot(list_of_words)
+    # print("FIRST", best_5_letters_to_guess_1)
 
-    best_letter_1=find_best_letter_to_guess(best_5_letters_to_guess,[])
+    best_letter_1=find_best_letter_to_guess(best_5_letters_to_guess_1,[])
+    position_of_letters_guessed.append(list(best_letter_1)[0])
     item_to_append=list(best_letter_1.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_first_letter=refine_list(best_letter_1,{}, {}, list_of_words)
-
+    
     # second letter
     best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_first_letter)
-    print("SECOND", best_5_letters_to_guess)
+    # # print("SECOND", best_5_letters_to_guess)
 
     best_letter_2=find_best_letter_to_guess(best_5_letters_to_guess, list_of_letters_guessed)
+    position_of_letters_guessed.append(list(best_letter_2)[0])
     item_to_append=list(best_letter_2.values())
     list_of_letters_guessed.append(item_to_append[0])
-    list_after_second_letter=refine_list(best_letter_2,{}, {}, list_after_first_letter)
+    list_after_second_letter=refine_list(best_letter_2, {}, {}, list_after_first_letter)
     
+
     # third letter
     best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_second_letter)
-    print("THIRD", best_5_letters_to_guess)
+    # print("THIRD", best_5_letters_to_guess)
     best_letter_3=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
+    position_of_letters_guessed.append(list(best_letter_3)[0])
+
     item_to_append=list(best_letter_3.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_third_letter=refine_list(best_letter_3,{}, {}, list_after_second_letter)
 
     # forth letter
     best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_third_letter)
-    print("FORTH", best_5_letters_to_guess)
+    # print("FORTH", best_5_letters_to_guess)
     best_letter_4=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
+    position_of_letters_guessed.append(list(best_letter_4)[0])
+
     item_to_append=list(best_letter_4.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_forth_letter=refine_list(best_letter_4,{}, {}, list_after_third_letter)
 
+    
     # 5th letter
     best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_forth_letter)
-    print("FIFTH", best_5_letters_to_guess)
+    # print("FIFTH", best_5_letters_to_guess[2])
+
+    
     best_letter_5=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
     item_to_append=list(best_letter_5.values())
     list_of_letters_guessed.append(item_to_append[0])
     list_after_fifth_letter=refine_list(best_letter_5,{}, {}, list_after_forth_letter)
 
-    print(list_of_letters_guessed)
-    print(list_after_fifth_letter)
+
 
     return list_after_fifth_letter[0]
 
 
 guess=make_guess(sample_list)
 print(guess)
-
+print(len(sample_list))
 
 #%%
 
