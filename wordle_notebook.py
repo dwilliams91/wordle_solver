@@ -1,6 +1,12 @@
+
+
 #%%
 from sample_wordle import sample_list
-# import random from numpy
+import random
+random_index = random.randint(0,len(sample_list)-1)
+random_word=sample_list[random_index]
+random_word="might"
+
 # this returns a 5X5 list of the 5 most common letter in each spot
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -103,13 +109,13 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_
 
 # sample data
 # correct_position_letters_dict={
-#    4:"s"
+#    2: 'n'
 # }
 # incorrect_position_letters={
-    
+#     0: 'n'
 # }
 # incorrect_letters={
-   
+#    1: 'i', 3: 't', 4: 'h'
 # }
 # testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
 
@@ -130,82 +136,97 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
                 current_best_number=best_positional_letter[1]
                 current_best_letter_position=x
                 current_best_letter=best_positional_letter[0]
-
-
-   
     return {
         current_best_letter_position:current_best_letter
     }
 
 
-
-
-# %%
 def make_guess(list_of_words):
     # initial list
     list_of_letters_guessed=[]
-    position_of_letters_guessed=[]
-    best_5_letters_to_guess_1=best_5_letters_in_each_spot(list_of_words)
-    # print("FIRST", best_5_letters_to_guess_1)
+    my_guess=[]
+    list_after_first_letter, list_of_letters_guessed=letter_of_guess(list_of_words, list_of_letters_guessed)
+    if len(list_after_first_letter)<=1:
+        print("time to make a guess 1")
+        my_guess=list_after_first_letter[0]
 
-    best_letter_1=find_best_letter_to_guess(best_5_letters_to_guess_1,[])
-    position_of_letters_guessed.append(list(best_letter_1)[0])
-    item_to_append=list(best_letter_1.values())
-    list_of_letters_guessed.append(item_to_append[0])
-    list_after_first_letter=refine_list(best_letter_1,{}, {}, list_of_words)
+    list_after_second_letter, list_of_letters_guessed=letter_of_guess(list_after_first_letter, list_of_letters_guessed)
+    if len(list_after_second_letter)<=1:
+        print("time to make a guess 2")
+        my_guess=list_after_second_letter[0]
+
+
+    list_after_third_letter, list_of_letters_guessed=letter_of_guess(list_after_second_letter, list_of_letters_guessed)
+    if len(list_after_third_letter)<=1:
+        print("time to make a guess 3")
+        my_guess=list_after_third_letter[0]
+
+    print(list_after_third_letter)
+
+    list_after_forth_letter, list_of_letters_guessed=letter_of_guess(list_after_third_letter, list_of_letters_guessed)
+    if len(list_after_forth_letter)<=1:
+        print("time to make a guess 4")
+        my_guess=list_after_forth_letter[0]
+        return my_guess
+
+    print(list_after_forth_letter)
+
+    list_after_fifth_letter, list_of_letters_guessed=letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
+    if len(list_after_fifth_letter)<=1:
+        print("time to make a guess 5")
+        my_guess=list_after_fifth_letter[0]
+
     
-    # second letter
-    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_first_letter)
-    # # print("SECOND", best_5_letters_to_guess)
+    return my_guess
 
+
+def letter_of_guess(my_list, list_of_letters_guessed):
+
+    best_5_letters_to_guess=best_5_letters_in_each_spot(my_list)
+    # print(" letter distrubtion ", best_5_letters_to_guess)
     best_letter_2=find_best_letter_to_guess(best_5_letters_to_guess, list_of_letters_guessed)
-    position_of_letters_guessed.append(list(best_letter_2)[0])
+    # print("best letter", best_letter_2)
     item_to_append=list(best_letter_2.values())
     list_of_letters_guessed.append(item_to_append[0])
-    list_after_second_letter=refine_list(best_letter_2, {}, {}, list_after_first_letter)
-    
-
-    # third letter
-    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_second_letter)
-    # print("THIRD", best_5_letters_to_guess)
-    best_letter_3=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
-    position_of_letters_guessed.append(list(best_letter_3)[0])
-
-    item_to_append=list(best_letter_3.values())
-    list_of_letters_guessed.append(item_to_append[0])
-    list_after_third_letter=refine_list(best_letter_3,{}, {}, list_after_second_letter)
-
-    # forth letter
-    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_third_letter)
-    # print("FORTH", best_5_letters_to_guess)
-    best_letter_4=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
-    position_of_letters_guessed.append(list(best_letter_4)[0])
-
-    item_to_append=list(best_letter_4.values())
-    list_of_letters_guessed.append(item_to_append[0])
-    list_after_forth_letter=refine_list(best_letter_4,{}, {}, list_after_third_letter)
-
-    
-    # 5th letter
-    best_5_letters_to_guess=best_5_letters_in_each_spot(list_after_forth_letter)
-    # print("FIFTH", best_5_letters_to_guess[2])
-
-    
-    best_letter_5=find_best_letter_to_guess(best_5_letters_to_guess,list_of_letters_guessed)
-    item_to_append=list(best_letter_5.values())
-    list_of_letters_guessed.append(item_to_append[0])
-    list_after_fifth_letter=refine_list(best_letter_5,{}, {}, list_after_forth_letter)
-
-
-
-    return list_after_fifth_letter[0]
+    refined_list=refine_list(best_letter_2, {}, {}, my_list)
+    # print("current_state_of_list", refined_list)
+    # if len(refined_list)==0:
+    return refined_list, list_of_letters_guessed
 
 
 guess=make_guess(sample_list)
 print(guess)
-print(len(sample_list))
 
 #%%
+def calculate_colors(correct_word, guessed_word):
+    green_dict={}
+    yellow_dict={}
+    black_dict={}
 
+    for i in range(0, len(correct_word)):
+        if guessed_word[i]==correct_word[i]:
+            green_dict[i]=guessed_word[i]
+            continue
+        elif guessed_word[i] in correct_word:
+            yellow_dict[i]=guessed_word[i]
+            continue
+        else:
+            black_dict[i]=guessed_word[i]
+            
+    
+    return green_dict, yellow_dict, black_dict
+
+
+green_dict, yellow_dict, black_dict=calculate_colors(random_word, guess)
+print(green_dict)
+print(yellow_dict)
+print(black_dict)
+list_1_guess=refine_list(green_dict, yellow_dict, black_dict, sample_list)
+print(list_1_guess)
+# %%
+list_2_guess=make_guess(list_1_guess)
+# %%
+green_dict, yellow_dict, black_dict=calculate_colors(random_word, list_2_guess)
+list_2_guess=refine_list(green_dict, yellow_dict, black_dict, list_1_guess)
 
 # %%
