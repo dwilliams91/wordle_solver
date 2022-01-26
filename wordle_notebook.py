@@ -1,13 +1,16 @@
 
-
 #%%
-from sample_wordle import sample_list
+my_file = open("large_sample_size.txt", "r")
+sample_list = my_file.read()
+sample_list = sample_list.split(",")
+#%%
 import random
 random_index = random.randint(0,len(sample_list)-1)
-random_word=sample_list[random_index]
-random_word="might"
+goal_word=sample_list[random_index]
+print(goal_word)
 
 # this returns a 5X5 list of the 5 most common letter in each spot
+
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
@@ -54,7 +57,6 @@ def best_5_letters_in_each_spot(sample_list):
     best_fourth=find_top_5(letter_dictionary_fourth)
     best_fifth=find_top_5(letter_dictionary_fifth)
     return [best_first, best_second, best_third, best_fourth, best_fifth]
-
 
 # this refines the list depending on the guess. 
 def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_list=None):
@@ -147,36 +149,29 @@ def make_guess(list_of_words):
     my_guess=[]
     list_after_first_letter, list_of_letters_guessed=letter_of_guess(list_of_words, list_of_letters_guessed)
     if len(list_after_first_letter)<=1:
-        print("time to make a guess 1")
+        print("using 1 letter to guess")
         my_guess=list_after_first_letter[0]
 
     list_after_second_letter, list_of_letters_guessed=letter_of_guess(list_after_first_letter, list_of_letters_guessed)
     if len(list_after_second_letter)<=1:
-        print("time to make a guess 2")
+        print("using 2 letters to guess")
         my_guess=list_after_second_letter[0]
-
 
     list_after_third_letter, list_of_letters_guessed=letter_of_guess(list_after_second_letter, list_of_letters_guessed)
     if len(list_after_third_letter)<=1:
-        print("time to make a guess 3")
+        print("using 3 letters to guess")
         my_guess=list_after_third_letter[0]
-
-    print(list_after_third_letter)
 
     list_after_forth_letter, list_of_letters_guessed=letter_of_guess(list_after_third_letter, list_of_letters_guessed)
     if len(list_after_forth_letter)<=1:
-        print("time to make a guess 4")
+        print("using 4 letters to guess")
         my_guess=list_after_forth_letter[0]
         return my_guess
 
-    print(list_after_forth_letter)
-
     list_after_fifth_letter, list_of_letters_guessed=letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
     if len(list_after_fifth_letter)<=1:
-        print("time to make a guess 5")
+        print("using 5 letters to guess")
         my_guess=list_after_fifth_letter[0]
-
-    
     return my_guess
 
 
@@ -194,10 +189,7 @@ def letter_of_guess(my_list, list_of_letters_guessed):
     return refined_list, list_of_letters_guessed
 
 
-guess=make_guess(sample_list)
-print(guess)
 
-#%%
 def calculate_colors(correct_word, guessed_word):
     green_dict={}
     yellow_dict={}
@@ -212,21 +204,40 @@ def calculate_colors(correct_word, guessed_word):
             continue
         else:
             black_dict[i]=guessed_word[i]
-            
+    # print("green", green_dict)
+    # print("yellow", yellow_dict)
+    # print("black", black_dict)
+    if correct_word==guessed_word:
+        print("YOU DID IT")
+        print("The word is ", guessed_word)
     
     return green_dict, yellow_dict, black_dict
 
+def take_turn(guess, goal_word, current_word_list):
+    print("my guess is ", guess)
+    print("the goal word is ", goal_word)
 
-green_dict, yellow_dict, black_dict=calculate_colors(random_word, guess)
-print(green_dict)
-print(yellow_dict)
-print(black_dict)
-list_1_guess=refine_list(green_dict, yellow_dict, black_dict, sample_list)
-print(list_1_guess)
-# %%
-list_2_guess=make_guess(list_1_guess)
-# %%
-green_dict, yellow_dict, black_dict=calculate_colors(random_word, list_2_guess)
-list_2_guess=refine_list(green_dict, yellow_dict, black_dict, list_1_guess)
+    colors=calculate_colors(goal_word, guess)
+    print("green", colors[0])
+    print("yellow", colors[1])
+    print("black", colors[2])
 
+    list_of_words_to_guess=refine_list(colors[0], colors[1], colors[2], current_word_list)
+    print("this is the list of words ",list_of_words_to_guess)
+
+    new_guess=make_guess(list_of_words_to_guess)
+    print("my new guess is ", new_guess)
+    return new_guess, goal_word, list_of_words_to_guess
+
+
+#%%
+guess=make_guess(sample_list)
+First_Turn=take_turn(guess, goal_word, sample_list)
+#%%
+Second_Turn=take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
+#%%
+Third_Turn=take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
 # %%
+Forth_Turn=take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
+#%%
+Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
