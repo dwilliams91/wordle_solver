@@ -3,11 +3,11 @@
 my_file = open("large_sample_size.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
-#%%
+
 import random
-random_index = random.randint(0,len(sample_list)-1)
-goal_word=sample_list[random_index]
-print(goal_word)
+# random_index = random.randint(0,len(sample_list)-1)
+# goal_word=sample_list[random_index]
+# print(goal_word)
 
 # this returns a 5X5 list of the 5 most common letter in each spot
 
@@ -149,28 +149,28 @@ def make_guess(list_of_words):
     my_guess=[]
     list_after_first_letter, list_of_letters_guessed=letter_of_guess(list_of_words, list_of_letters_guessed)
     if len(list_after_first_letter)<=1:
-        print("using 1 letter to guess")
+        # print("using 1 letter to guess")
         my_guess=list_after_first_letter[0]
 
     list_after_second_letter, list_of_letters_guessed=letter_of_guess(list_after_first_letter, list_of_letters_guessed)
     if len(list_after_second_letter)<=1:
-        print("using 2 letters to guess")
+        # print("using 2 letters to guess")
         my_guess=list_after_second_letter[0]
 
     list_after_third_letter, list_of_letters_guessed=letter_of_guess(list_after_second_letter, list_of_letters_guessed)
     if len(list_after_third_letter)<=1:
-        print("using 3 letters to guess")
+        # print("using 3 letters to guess")
         my_guess=list_after_third_letter[0]
 
     list_after_forth_letter, list_of_letters_guessed=letter_of_guess(list_after_third_letter, list_of_letters_guessed)
     if len(list_after_forth_letter)<=1:
-        print("using 4 letters to guess")
+        # print("using 4 letters to guess")
         my_guess=list_after_forth_letter[0]
         return my_guess
 
     list_after_fifth_letter, list_of_letters_guessed=letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
     if len(list_after_fifth_letter)<=1:
-        print("using 5 letters to guess")
+        # print("using 5 letters to guess")
         my_guess=list_after_fifth_letter[0]
     return my_guess
 
@@ -223,21 +223,64 @@ def take_turn(guess, goal_word, current_word_list):
     print("black", colors[2])
 
     list_of_words_to_guess=refine_list(colors[0], colors[1], colors[2], current_word_list)
+    print("there are ", len(list_of_words_to_guess), " words left")
+
     print("this is the list of words ",list_of_words_to_guess)
 
     new_guess=make_guess(list_of_words_to_guess)
     print("my new guess is ", new_guess)
+    print("_______________________________________________________________________")
     return new_guess, goal_word, list_of_words_to_guess
 
 
-#%%
-guess=make_guess(sample_list)
-First_Turn=take_turn(guess, goal_word, sample_list)
-#%%
-Second_Turn=take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
-#%%
-Third_Turn=take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
+# #%%
+# random_index = random.randint(0,len(sample_list)-1)
+# goal_word=sample_list[random_index]
+# print(goal_word)
+# guess=make_guess(sample_list)
+# First_Turn=take_turn(guess, goal_word, sample_list)
+# #%%
+# Second_Turn=take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
+# #%%
+# Third_Turn=take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
+# # %%
+# Forth_Turn=take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
+# #%%
+# Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
 # %%
-Forth_Turn=take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
-#%%
-Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
+def play_a_round(sample_list):
+    random_index = random.randint(0,len(sample_list)-1)
+    goal_word=sample_list[random_index]
+    # print("the goal word is", goal_word)
+    guess=make_guess(sample_list)
+    # print("the first guess is ", guess)
+
+    for i in range(0,1):
+        First_Turn=take_turn(guess, goal_word, sample_list)
+        if First_Turn[0]==First_Turn[1]:
+            final_guess=First_Turn[0]
+            break
+        Second_Turn=take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
+        if Second_Turn[0]==Second_Turn[1]:
+            final_guess=Second_Turn[0]
+            break
+        Third_Turn=take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
+        if Third_Turn[0]==Third_Turn[1]:
+            final_guess=Third_Turn[0]
+            break
+        Forth_Turn=take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
+        if Forth_Turn[0]==Forth_Turn[1]:
+            final_guess=Forth_Turn[0]
+            break
+        Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
+        if Fifth_Turn[0]==Fifth_Turn[1]:
+            final_guess=Fifth_Turn[0]
+            break
+        else:
+            final_guess=Fifth_Turn[0]
+            print("YOU FAILED the goal was ", goal_word, "your final guess was ", final_guess )
+    print("you did it! the goal was ", goal_word, "your final guess was ", final_guess )
+    print("==============================================")
+play_a_round(sample_list)
+# %%
+=
