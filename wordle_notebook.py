@@ -303,13 +303,30 @@ play_a_round(sample_list)
 
 
 
-
 # %%
+
+"""
+results_after_guess=[
+#     {"b":"b"},
+#     {"b":"a"},
+#     {"y":"l"},
+#     {"g":"e"},
+#     {"b":"s"}
+# ]
+THE KEYS SHOULD EITHER BE 
+"g" FOR GREEN, 
+"y" FOR YELLOW
+"b" FOR BLACK
+
+THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
+"""
+
+
 results_after_guess=[
     {"b":"b"},
     {"b":"a"},
-    {"b":"l"},
-    {"b":"e"},
+    {"y":"l"},
+    {"g":"e"},
     {"b":"s"}
 ]
 turn_1_results=type_outcome_faster(results_after_guess)
@@ -321,11 +338,11 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"b":"s"},
-    {"b":"p"},
-    {"b":"i"},
-    {"b":"c"},
-    {"b":"e"}
+    {"g":"l"},
+    {"g":"i"},
+    {"b":"f"},
+    {"g":"e"},
+    {"b":"r"}
 ]
 turn_2_results=type_outcome_faster(results_after_guess)
 
