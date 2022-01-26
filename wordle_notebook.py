@@ -5,9 +5,6 @@ sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
 import random
-# random_index = random.randint(0,len(sample_list)-1)
-# goal_word=sample_list[random_index]
-# print(goal_word)
 
 # this returns a 5X5 list of the 5 most common letter in each spot
 
@@ -58,6 +55,14 @@ def best_5_letters_in_each_spot(sample_list):
     best_fifth=find_top_5(letter_dictionary_fifth)
     return [best_first, best_second, best_third, best_fourth, best_fifth]
 
+first_round=best_5_letters_in_each_spot(sample_list)
+print(first_round[0])
+print(first_round[1])
+print(first_round[2])
+print(first_round[3])
+print(first_round[4])
+
+
 # this refines the list depending on the guess. 
 def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_list=None):
     green_remove_list=[]
@@ -69,27 +74,28 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_
     incorrect_values_list=yellow_letters.values()
     black_letters_list=black_letters.values()
 
-    if len(green_letters) !=0:
-        for x in range(0,len(my_list)):
-            word=my_list[x]
-            need_to_be_removed=False
-            # if the right letter is in the right spot
-            for position in correct_key_list_position:
-                if word[position] != green_letters[position]:
-                    need_to_be_removed=True
-                    break
-            # if the right letter is in the wrong spot, remove words where the letter is in that spot
-            for position in incorrect_key_list_position:
-                if word[position]==yellow_letters[position]:
-                    need_to_be_removed=True
-                    break
-            if need_to_be_removed:
-                green_remove_list.append(word)
+    # if len(green_letters) !=0:
+    for x in range(0,len(my_list)):
+        word=my_list[x]
+        need_to_be_removed=False
+        # if the right letter is in the right spot
+        for position in correct_key_list_position:
+            if word[position] != green_letters[position]:
+                need_to_be_removed=True
+                break
+        # if the right letter is in the wrong spot, remove words where the letter is in that spot
+        for position in incorrect_key_list_position:
+            if word[position]==yellow_letters[position]:
+                need_to_be_removed=True
+                break
+        if need_to_be_removed:
+            green_remove_list.append(word)
     remove_not_greens=(set(my_list)-set(green_remove_list))
 
     # taking out words that don't contain the letters 
     for word in my_list:
         for letter in incorrect_values_list:
+            
             if letter not in word:
                 yellow_remove_list.append(word)
     
@@ -110,17 +116,20 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_
     return list(remove_black_letters)
 
 # sample data
-# correct_position_letters_dict={
-#    2: 'n'
-# }
-# incorrect_position_letters={
-#     0: 'n'
-# }
-# incorrect_letters={
-#    1: 'i', 3: 't', 4: 'h'
-# }
-# testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
+correct_position_letters_dict={
+   3: 'e'
+}
+incorrect_position_letters={
+    0: 'b',
+}
+incorrect_letters={
+   1: 'a',
+    2: 'l', 
+    4: 's'
+}
 
+# testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
+# print(testing_1)
 
 # this looks through the top 5X5 list, and finds the best letter
 def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
@@ -232,21 +241,21 @@ def take_turn(guess, goal_word, current_word_list):
     print("_______________________________________________________________________")
     return new_guess, goal_word, list_of_words_to_guess
 
+def type_outcome_faster(my_word):
+    green_dict={}
+    yellow_dict={}
+    black_dict={}
+    for i in range(0,5):
+        if list(my_word[i].keys())[0]=='g':
+            green_dict[i]=list(my_word[i].values())[0]
+        elif list(my_word[i].keys())[0]=='y':
+            yellow_dict[i]=list(my_word[i].values())[0]
+        elif list(my_word[i].keys())[0]=='b':
+            black_dict[i]=list(my_word[i].values())[0]
 
-# #%%
-# random_index = random.randint(0,len(sample_list)-1)
-# goal_word=sample_list[random_index]
-# print(goal_word)
-# guess=make_guess(sample_list)
-# First_Turn=take_turn(guess, goal_word, sample_list)
-# #%%
-# Second_Turn=take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
-# #%%
-# Third_Turn=take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
-# # %%
-# Forth_Turn=take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
-# #%%
-# Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
+    return green_dict, yellow_dict, black_dict
+
+
 # %%
 def play_a_round(sample_list):
     random_index = random.randint(0,len(sample_list)-1)
@@ -272,7 +281,7 @@ def play_a_round(sample_list):
         if Forth_Turn[0]==Forth_Turn[1]:
             final_guess=Forth_Turn[0]
             break
-        Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn(1), Forth_Turn[2])
+        Fifth_Turn=take_turn(Forth_Turn[0], Forth_Turn[1], Forth_Turn[2])
         if Fifth_Turn[0]==Fifth_Turn[1]:
             final_guess=Fifth_Turn[0]
             break
@@ -282,5 +291,84 @@ def play_a_round(sample_list):
     print("you did it! the goal was ", goal_word, "your final guess was ", final_guess )
     print("==============================================")
 play_a_round(sample_list)
+# _______________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
 # %%
-=
+results_after_guess=[
+    {"b":"b"},
+    {"b":"a"},
+    {"b":"l"},
+    {"b":"e"},
+    {"b":"s"}
+]
+turn_1_results=type_outcome_faster(results_after_guess)
+print(turn_1_results[0])
+print(turn_1_results[1])
+print(turn_1_results[2])
+turn_1=refine_list(turn_1_results[0], turn_1_results[1], turn_1_results[2], sample_list )
+print(turn_1)
+make_guess(turn_1)
+# %%
+results_after_guess=[
+    {"b":"s"},
+    {"b":"p"},
+    {"b":"i"},
+    {"b":"c"},
+    {"b":"e"}
+]
+turn_2_results=type_outcome_faster(results_after_guess)
+
+turn_2=refine_list(turn_2_results[0], turn_2_results[1], turn_2_results[2], turn_1)
+print(turn_2)
+make_guess(turn_2)
+# %%
+results_after_guess=[
+    {"b":"r"},
+    {"b":"o"},
+    {"b":"i"},
+    {"b":"l"},
+    {"b":"y"}
+]
+turn_3_results=type_outcome_faster(results_after_guess)
+
+turn_3=refine_list(turn_3_results[0], turn_3_results[1], turn_3_results[2], turn_2 )
+print(turn_3)
+make_guess(turn_3)
+# %%
+results_after_guess=[
+    {"b":"l"},
+    {"b":"i"},
+    {"b":"g"},
+    {"b":"h"},
+    {"b":"t"}
+]
+turn_4_results=type_outcome_faster(results_after_guess)
+
+turn_4=refine_list(turn_4_results[0], turn_4_results[1], turn_4_results[2], turn_3 )
+print(turn_4)
+make_guess(turn_4)
+
+# %%
+results_after_guess=[
+    {"b":"u"},
+    {"b":"n"},
+    {"b":"f"},
+    {"b":"e"},
+    {"b":"d"}
+]
+turn_5_results=type_outcome_faster(results_after_guess)
+
+turn_5=refine_list(turn_5_results[0], turn_5_results[1], turn_5_results[2], turn_4 )
+print(turn_5)
+make_guess(turn_5)
