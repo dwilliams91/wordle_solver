@@ -1,4 +1,6 @@
 
+"""HIT RUN ON THE FIRST CELL TO DEFINE ALL THE FUNCTIONS"""
+
 #%%
 my_file = open("large_sample_size.txt", "r")
 sample_list = my_file.read()
@@ -256,7 +258,9 @@ def type_outcome_faster(my_word):
     return green_dict, yellow_dict, black_dict
 
 
+
 # %%
+"""HIT RUN CELL TO HAVE THE ALGORTHM PLAY ITSELF"""
 def play_a_round(sample_list):
     random_index = random.randint(0,len(sample_list)-1)
     goal_word=sample_list[random_index]
@@ -309,8 +313,8 @@ play_a_round(sample_list)
 results_after_guess=[
 #     {"b":"b"},
 #     {"b":"a"},
-#     {"y":"l"},
-#     {"g":"e"},
+#     {"b":"l"},
+#     {"b":"e"},
 #     {"b":"s"}
 # ]
 THE KEYS SHOULD EITHER BE 
@@ -325,8 +329,8 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 results_after_guess=[
     {"b":"b"},
     {"b":"a"},
-    {"y":"l"},
-    {"g":"e"},
+    {"b":"l"},
+    {"y":"e"},
     {"b":"s"}
 ]
 turn_1_results=type_outcome_faster(results_after_guess)
@@ -338,11 +342,11 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"g":"l"},
-    {"g":"i"},
-    {"b":"f"},
-    {"g":"e"},
-    {"b":"r"}
+    {"g":"p"},
+    {"y":"r"},
+    {"b":"i"},
+    {"b":"c"},
+    {"y":"e"}
 ]
 turn_2_results=type_outcome_faster(results_after_guess)
 
