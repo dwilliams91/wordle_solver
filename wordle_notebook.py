@@ -6,10 +6,25 @@ my_file = open("large_sample_size.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
+from cgi import print_directory
 import random
-
+#%%
+from sample_wordle import sample_list
 # this returns a 5X5 list of the 5 most common letter in each spot
-
+def find_best_letter(sample_list):
+    alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    my_dictionary={}
+    for letter in alphabet:
+        my_dictionary[letter]=0
+    for word in sample_list:
+        for x in range(0,len(alphabet)):
+            if alphabet[x] in word:
+                my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
+    my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
+    return my_dictionary
+    
+    
+#%%
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
@@ -132,74 +147,105 @@ incorrect_letters={
 
 # testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
 # print(testing_1)
-
+#%%
 # this looks through the top 5X5 list, and finds the best letter
 def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
     current_best_number=0
     current_best_letter_position=0
     current_best_letter=""
+    list_of_letters_guessed=list(already_guessed_letter.values())
+    list_of_positions_guessed=list(already_guessed_letter.keys())
 
-    for x in range(0,len(best_letters_to_guess)):
-        for i in range(0,4):
-            item=best_letters_to_guess[x]
-            best_positional_letter=item[i]   
-            # print(best_positional_letter," is compared to ('", current_best_letter, "', ", current_best_number)
+    possible_positions=[0,1,2,3,4]
+    # print(best_letters_to_guess)
+    if len(list_of_letters_guessed)==4:
+        for item in possible_positions:
+            if item not in list_of_positions_guessed:
+                position_of_final_letter=item
+        list_of_best_final_position=best_letters_to_guess[position_of_final_letter]
+        just_the_letters_of_final_position=[]
+        for x in range(0,5):
+            just_the_letters_of_final_position.append(list_of_best_final_position[x][0])
+        dictionary_of_all_best_letters=find_best_letter(sample_list)
+        counts_of_final_letters={}
+        for letter in just_the_letters_of_final_position:
+            counts_of_final_letters[letter]=dictionary_of_all_best_letters[letter]
+        largest_count=max(counts_of_final_letters.values())
+        current_best_letter=list(counts_of_final_letters.keys())[list(counts_of_final_letters.values()).index(largest_count)]
+        current_best_letter_position=position_of_final_letter
 
-            if best_positional_letter[1]>current_best_number and best_positional_letter[0] not in already_guessed_letter:
-                current_best_number=best_positional_letter[1]
-                current_best_letter_position=x
-                current_best_letter=best_positional_letter[0]
+    else:
+        for x in range(0,len(best_letters_to_guess)):
+            for i in range(0,4):
+                item=best_letters_to_guess[x]
+                best_positional_letter=item[i]   
+
+                if best_positional_letter[1]>current_best_number and best_positional_letter[0] not in list_of_letters_guessed:
+                    current_best_number=best_positional_letter[1]
+                    current_best_letter_position=x
+                    current_best_letter=best_positional_letter[0]
     return {
         current_best_letter_position:current_best_letter
     }
+#%%
+def refine_after_letter_of_guess(my_list, dictionary_of_letters_guessed):
+    # print(my_list)
+    best_5_letters_to_guess=best_5_letters_in_each_spot(my_list)
+    best_letter_2=find_best_letter_to_guess(best_5_letters_to_guess, dictionary_of_letters_guessed)
+    dictionary_of_letters_guessed.update(best_letter_2)
+    refined_list=refine_list(best_letter_2, {}, {}, my_list)
 
+    return refined_list, dictionary_of_letters_guessed 
 
 def make_guess(list_of_words):
     # initial list
-    list_of_letters_guessed=[]
+    list_of_letters_guessed={}
     my_guess=[]
-    list_after_first_letter, list_of_letters_guessed=letter_of_guess(list_of_words, list_of_letters_guessed)
+    list_after_first_letter, list_of_letters_guessed=refine_after_letter_of_guess(list_of_words, list_of_letters_guessed)
     if len(list_after_first_letter)<=1:
         # print("using 1 letter to guess")
         my_guess=list_after_first_letter[0]
 
-    list_after_second_letter, list_of_letters_guessed=letter_of_guess(list_after_first_letter, list_of_letters_guessed)
+    list_after_second_letter, list_of_letters_guessed=refine_after_letter_of_guess(list_after_first_letter, list_of_letters_guessed)
     if len(list_after_second_letter)<=1:
         # print("using 2 letters to guess")
         my_guess=list_after_second_letter[0]
 
-    list_after_third_letter, list_of_letters_guessed=letter_of_guess(list_after_second_letter, list_of_letters_guessed)
+    list_after_third_letter, list_of_letters_guessed=refine_after_letter_of_guess(list_after_second_letter, list_of_letters_guessed)
     if len(list_after_third_letter)<=1:
         # print("using 3 letters to guess")
         my_guess=list_after_third_letter[0]
 
-    list_after_forth_letter, list_of_letters_guessed=letter_of_guess(list_after_third_letter, list_of_letters_guessed)
+    list_after_forth_letter, list_of_letters_guessed=refine_after_letter_of_guess(list_after_third_letter, list_of_letters_guessed)
     if len(list_after_forth_letter)<=1:
         # print("using 4 letters to guess")
         my_guess=list_after_forth_letter[0]
         return my_guess
 
-    list_after_fifth_letter, list_of_letters_guessed=letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
+    list_after_fifth_letter, list_of_letters_guessed=refine_after_letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
     if len(list_after_fifth_letter)<=1:
         # print("using 5 letters to guess")
         my_guess=list_after_fifth_letter[0]
     return my_guess
 
 
-def letter_of_guess(my_list, list_of_letters_guessed):
+#%%
+def make_guess_recursive(list_of_words,  dictionary_of_letters_guessed):
+    list_of_letters_guessed=list(dictionary_of_letters_guessed)
+    if len(list_of_words)>1 and len(list_of_letters_guessed)<4:
+        list_after_turn, list_of_letters_guessed=refine_after_letter_of_guess(list_of_words, dictionary_of_letters_guessed)
+        make_guess_recursive(list_after_turn, dictionary_of_letters_guessed)
+    elif len(list_of_letters_guessed)==4:
+        # print(dictionary_of_letters_guessed)
+        print(best_5_letters_in_each_spot(list_of_words))
+        print("is this hitting")
+        return list_of_words
+    else: 
+        print(list_of_words)
+        return list_of_words
 
-    best_5_letters_to_guess=best_5_letters_in_each_spot(my_list)
-    # print(" letter distrubtion ", best_5_letters_to_guess)
-    best_letter_2=find_best_letter_to_guess(best_5_letters_to_guess, list_of_letters_guessed)
-    # print("best letter", best_letter_2)
-    item_to_append=list(best_letter_2.values())
-    list_of_letters_guessed.append(item_to_append[0])
-    refined_list=refine_list(best_letter_2, {}, {}, my_list)
-    # print("current_state_of_list", refined_list)
-    # if len(refined_list)==0:
-    return refined_list, list_of_letters_guessed
 
-
+#%%
 
 def calculate_colors(correct_word, guessed_word):
     green_dict={}
@@ -327,7 +373,7 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 
 
 results_after_guess=[
-    {"b":"b"},
+    {"b":"t"},
     {"b":"a"},
     {"b":"l"},
     {"y":"e"},
@@ -342,9 +388,9 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"g":"p"},
-    {"y":"r"},
-    {"b":"i"},
+    {"y":"p"},
+    {"b":"r"},
+    {"y":"i"},
     {"b":"c"},
     {"y":"e"}
 ]
@@ -368,11 +414,11 @@ print(turn_3)
 make_guess(turn_3)
 # %%
 results_after_guess=[
-    {"b":"l"},
+    {"g":"s"},
+    {"b":"m"},
     {"b":"i"},
-    {"b":"g"},
-    {"b":"h"},
-    {"b":"t"}
+    {"y":"t"},
+    {"g":"e"}
 ]
 turn_4_results=type_outcome_faster(results_after_guess)
 
