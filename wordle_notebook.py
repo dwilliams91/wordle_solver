@@ -6,10 +6,8 @@ my_file = open("large_sample_size.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
-from cgi import print_directory
 import random
 #%%
-from sample_wordle import sample_list
 # this returns a 5X5 list of the 5 most common letter in each spot
 def find_best_letter(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -23,8 +21,6 @@ def find_best_letter(sample_list):
     my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
     return my_dictionary
     
-    
-#%%
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
@@ -147,7 +143,7 @@ incorrect_letters={
 
 # testing_1=refine_list(correct_position_letters_dict, incorrect_position_letters, incorrect_letters, sample_list )
 # print(testing_1)
-#%%
+
 # this looks through the top 5X5 list, and finds the best letter
 def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
     current_best_number=0
@@ -157,7 +153,6 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
     list_of_positions_guessed=list(already_guessed_letter.keys())
 
     possible_positions=[0,1,2,3,4]
-    # print(best_letters_to_guess)
     if len(list_of_letters_guessed)==4:
         for item in possible_positions:
             if item not in list_of_positions_guessed:
@@ -165,7 +160,9 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
         list_of_best_final_position=best_letters_to_guess[position_of_final_letter]
         just_the_letters_of_final_position=[]
         for x in range(0,5):
-            just_the_letters_of_final_position.append(list_of_best_final_position[x][0])
+            if list_of_best_final_position[x][1] !=0:
+
+                just_the_letters_of_final_position.append(list_of_best_final_position[x][0])
         dictionary_of_all_best_letters=find_best_letter(sample_list)
         counts_of_final_letters={}
         for letter in just_the_letters_of_final_position:
@@ -187,7 +184,7 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
     return {
         current_best_letter_position:current_best_letter
     }
-#%%
+
 def refine_after_letter_of_guess(my_list, dictionary_of_letters_guessed):
     # print(my_list)
     best_5_letters_to_guess=best_5_letters_in_each_spot(my_list)
@@ -229,7 +226,7 @@ def make_guess(list_of_words):
     return my_guess
 
 
-#%%
+
 def make_guess_recursive(list_of_words,  dictionary_of_letters_guessed):
     list_of_letters_guessed=list(dictionary_of_letters_guessed)
     if len(list_of_words)>1 and len(list_of_letters_guessed)<4:
@@ -244,8 +241,6 @@ def make_guess_recursive(list_of_words,  dictionary_of_letters_guessed):
         print(list_of_words)
         return list_of_words
 
-
-#%%
 
 def calculate_colors(correct_word, guessed_word):
     green_dict={}
