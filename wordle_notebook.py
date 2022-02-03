@@ -441,3 +441,7 @@ while i<5:
     print(i)
     i+=1
 # %%
+second_guesses= ['abler', 'acres', 'aimer', 'airer', 'amino', 'bally', 'belch', 'blame', 'blare', 'bless', 'bract', 'brass', 'calve', 'carry', 'carte', 'clots', 'cocks', 'corky', 'false', 'flats', 'flour', 'folly', 'gamer', 'gamin', 'golem', 'grate', 'homer', 'humpy', 'lamer', 'lapse', 'later', 'lawny', 'lilts', 'limos', 'local', 'loses', 'mains', 'malts', 'mango', 'manly', 'mares', 'marge', 'mashy', 'masse', 'mater', 'melon', 'melts', 'menus', 'merry', 'mesne', 'miler', 'mires', 'miter', 'molar', 'moles', 'molly', 'molts', 'monad', 'moral', 'morel', 'mosts', 'mothy', 'mussy', 'nails', 'nares', 'nears', 'oiler', 'pales', 'palmy', 'parer', 'pelts', 'pilau', 'plump', 'ramps', 'relay', 'rents', 'riles', 'roble', 'rower', 'rumps', 'saner', 'scalp', 'seals', 'seams', 'sheer', 'shell', 'shlep', 'sines', 'slams', 'slate', 'slier', 'slimy', 'smirk', 'smote', 'spilt', 'spire', 'splat', 'stamp', 'stare', 'stark', 'stout', 'table', 'talks', 'tarts', 'taste', 'tasty', 'tempo', 'terms', 'tomes', 'towel', 'trams', 'trite']
+
+print(len(second_guesses))
+# %%
