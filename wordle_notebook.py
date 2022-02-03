@@ -368,11 +368,11 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 
 
 results_after_guess=[
-    {"b":"t"},
-    {"b":"a"},
+    {"b":"m"},
+    {"y":"a"},
     {"b":"l"},
-    {"y":"e"},
-    {"b":"s"}
+    {"b":"e"},
+    {"y":"s"}
 ]
 turn_1_results=type_outcome_faster(results_after_guess)
 print(turn_1_results[0])
@@ -383,11 +383,11 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"y":"p"},
-    {"b":"r"},
-    {"y":"i"},
-    {"b":"c"},
-    {"y":"e"}
+    {"g":"s"},
+    {"b":"t"},
+    {"g":"a"},
+    {"g":"r"},
+    {"b":"k"}
 ]
 turn_2_results=type_outcome_faster(results_after_guess)
 
@@ -396,11 +396,11 @@ print(turn_2)
 make_guess(turn_2)
 # %%
 results_after_guess=[
-    {"b":"r"},
-    {"b":"o"},
-    {"b":"i"},
-    {"b":"l"},
-    {"b":"y"}
+    {"g":"s"},
+    {"b":"c"},
+    {"g":"a"},
+    {"g":"r"},
+    {"b":"p"}
 ]
 turn_3_results=type_outcome_faster(results_after_guess)
 
@@ -434,3 +434,10 @@ turn_5_results=type_outcome_faster(results_after_guess)
 turn_5=refine_list(turn_5_results[0], turn_5_results[1], turn_5_results[2], turn_4 )
 print(turn_5)
 make_guess(turn_5)
+
+#%%
+i=0
+while i<5:
+    print(i)
+    i+=1
+# %%

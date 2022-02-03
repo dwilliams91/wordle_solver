@@ -8,8 +8,9 @@ sample_list = sample_list.split(",")
 import random
 
 class SolveWordle():
-    def __init__(self, sample_list):
+    def __init__(self, sample_list, turn_number=0):
         self.sample_list=sample_list
+        self.turn_number=turn_number
     
     def find_best_letter(self, sample_list):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -208,18 +209,25 @@ class SolveWordle():
         if len(list_after_first_letter)<=1:
             # print("using 1 letter to guess")
             my_guess=list_after_first_letter[0]
+            return my_guess
+
 
         list_after_second_letter, list_of_letters_guessed=self.refine_after_letter_of_guess(list_after_first_letter, list_of_letters_guessed)
         if len(list_after_second_letter)<=1:
             # print("using 2 letters to guess")
             my_guess=list_after_second_letter[0]
+            return my_guess
+
 
         list_after_third_letter, list_of_letters_guessed=self.refine_after_letter_of_guess(list_after_second_letter, list_of_letters_guessed)
         if len(list_after_third_letter)<=1:
             # print("using 3 letters to guess")
             my_guess=list_after_third_letter[0]
+            return my_guess
+
 
         list_after_forth_letter, list_of_letters_guessed=self.refine_after_letter_of_guess(list_after_third_letter, list_of_letters_guessed)
+        
         if len(list_after_forth_letter)<=1:
             # print("using 4 letters to guess")
             my_guess=list_after_forth_letter[0]
@@ -255,6 +263,8 @@ class SolveWordle():
         return green_dict, yellow_dict, black_dict
 
     def take_turn(self, guess, goal_word, current_word_list):
+        self.turn_number+=1
+        print("turn", self.turn_number)
         print("my guess is ", guess)
         print("the goal word is ", goal_word)
 
@@ -271,6 +281,12 @@ class SolveWordle():
         new_guess=self.make_guess(list_of_words_to_guess)
         print("my new guess is ", new_guess)
         print("_______________________________________________________________________")
+        # while (new_guess != goal_word):
+        #     print("dude")
+        #     breakpoint()
+        #     self.take_turn(new_guess, goal_word, list_of_words_to_guess)
+
+        
         return new_guess, goal_word, list_of_words_to_guess
 
     def type_outcome_faster(self, my_word):
@@ -293,36 +309,50 @@ class SolveWordle():
         # print("the goal word is", goal_word)
         guess=self.make_guess(self.sample_list)
         # print("the first guess is ", guess)
-
+        counter=0
         for i in range(0,1):
             First_Turn=self.take_turn(guess, goal_word, self.sample_list)
+            counter+=1
             if First_Turn[0]==First_Turn[1]:
                 final_guess=First_Turn[0]
-                break
+                break 
             Second_Turn=self.take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
+            counter+=1
             if Second_Turn[0]==Second_Turn[1]:
                 final_guess=Second_Turn[0]
                 break
             Third_Turn=self.take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
+            counter+=1
             if Third_Turn[0]==Third_Turn[1]:
                 final_guess=Third_Turn[0]
                 break
             Forth_Turn=self.take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
+            counter+=1
             if Forth_Turn[0]==Forth_Turn[1]:
                 final_guess=Forth_Turn[0]
                 break
             Fifth_Turn=self.take_turn(Forth_Turn[0], Forth_Turn[1], Forth_Turn[2])
+            counter+=1
             if Fifth_Turn[0]==Fifth_Turn[1]:
                 final_guess=Fifth_Turn[0]
                 break
+            SixthTurn=self.take_turn(Fifth_Turn[0], Fifth_Turn[1], Fifth_Turn[2])
+            counter+=1
+            if SixthTurn[0]==SixthTurn[1]:
+                final_guess=SixthTurn[0]
+                break
             else:
-                final_guess=Fifth_Turn[0]
+                final_guess=SixthTurn[0]
                 print("YOU FAILED the goal was ", goal_word, "your final guess was ", final_guess )
-        print("you did it! the goal was ", goal_word, "your final guess was ", final_guess )
+        print("you did it! it took you", counter, " turns. the goal was ", goal_word, "your final guess was ", final_guess )
         print("==============================================")
+        return counter
 
 def main():
-    SolveWordle(sample_list).play_a_round()
+    list_of_turns=[]
+    for i in range(0,10):
+        list_of_turns.append(SolveWordle(sample_list).play_a_round())
+    print(list_of_turns)
 
 if __name__ == "__main__":
     main()
