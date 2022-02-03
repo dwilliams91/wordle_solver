@@ -10,11 +10,12 @@ sample_list = sample_list.split(",")
 import random
 
 class SolveWordle():
-    def __init__(self, sample_list, turn_number=0, full_letter_count=None, will_print=False):
+    def __init__(self, sample_list, turn_number=0, full_letter_count=None, will_print=False, continue_greens=True):
         self.sample_list=sample_list
         self.turn_number=turn_number
         self.full_letter_count=full_letter_count
         self.will_print=will_print
+        self.continue_greens=continue_greens
     
     def find_best_letter(self, sample_list):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -268,6 +269,12 @@ class SolveWordle():
             print("The word is ", guessed_word)
         
         return green_dict, yellow_dict, black_dict
+    
+    def all_black(self, word):
+        my_dict={}
+        for i in range(0,len(word)):
+            my_dict[i]=word[i]
+        return my_dict
 
     def take_turn(self, guess, goal_word, current_word_list):
         self.turn_number+=1
@@ -275,17 +282,33 @@ class SolveWordle():
         # print("my guess is ", guess)
         # print("the goal word is ", goal_word)
 
-        colors=self.calculate_colors(goal_word, guess)
+        # colors=self.calculate_colors(goal_word, guess)
         # print("green", colors[0])
         # print("yellow", colors[1])
         # print("black", colors[2])
 
-        list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
+        
+        # list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
+
         # print("there are ", len(list_of_words_to_guess), " words left")
 
         # print("this is the list of words ",list_of_words_to_guess)
+        if self.continue_greens:
+            colors=self.calculate_colors(goal_word, guess)
+            list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
+            new_guess=self.make_guess(list_of_words_to_guess)
+        else:
+            if self.turn_number==1:
+                all_black=self.all_black(self.make_guess(self.sample_list))
+                list_of_words_to_guess=self.refine_list({}, {}, all_black, self.sample_list)
+                new_guess=self.make_guess(list_of_words_to_guess)
+                colors=self.calculate_colors(goal_word, guess)
+                list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
+            else:
+                colors=self.calculate_colors(goal_word, guess)
+                list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
+                new_guess=self.make_guess(list_of_words_to_guess)
 
-        new_guess=self.make_guess(list_of_words_to_guess)
         if self.will_print:
             print("turn", self.turn_number)
             print("my guess is ", guess)
@@ -325,7 +348,7 @@ class SolveWordle():
     def play_a_round(self):
         random_index = random.randint(0,len(self.sample_list)-1)
         goal_word=self.sample_list[random_index]
-        # goal_word='backs'
+        # goal_word='toper'
         # print("the goal word is", goal_word)
         guess=self.make_guess(self.sample_list)
         # print("the first guess is ", guess)
@@ -338,21 +361,25 @@ class SolveWordle():
                 break 
             Second_Turn=self.take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
             counter+=1
+
             if Second_Turn[0]==Second_Turn[1]:
                 final_guess=Second_Turn[0]
                 break
             Third_Turn=self.take_turn(Second_Turn[0], Second_Turn[1], Second_Turn[2])
             counter+=1
+
             if Third_Turn[0]==Third_Turn[1]:
                 final_guess=Third_Turn[0]
                 break
             Forth_Turn=self.take_turn(Third_Turn[0], Third_Turn[1], Third_Turn[2])
             counter+=1
+
             if Forth_Turn[0]==Forth_Turn[1]:
                 final_guess=Forth_Turn[0]
                 break
             Fifth_Turn=self.take_turn(Forth_Turn[0], Forth_Turn[1], Forth_Turn[2])
             counter+=1
+
             if Fifth_Turn[0]==Fifth_Turn[1]:
                 final_guess=Fifth_Turn[0]
                 break
@@ -411,8 +438,8 @@ def main():
     full_letter_count=find_best_letter(sample_list)
     list_of_turns=[]
     failed_words=[]
-    for i in range(0,1000):
-        count, final_guess=SolveWordle(sample_list, full_letter_count=full_letter_count, will_print=False).play_a_round()
+    for i in range(0,100):
+        count, final_guess=SolveWordle(sample_list, full_letter_count=full_letter_count, will_print=False, continue_greens=False).play_a_round()
         list_of_turns.append(count)
         if final_guess:
             failed_words.append(final_guess)

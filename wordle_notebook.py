@@ -369,10 +369,10 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 
 results_after_guess=[
     {"b":"m"},
-    {"y":"a"},
+    {"b":"a"},
     {"b":"l"},
     {"b":"e"},
-    {"y":"s"}
+    {"b":"s"}
 ]
 turn_1_results=type_outcome_faster(results_after_guess)
 print(turn_1_results[0])
