@@ -2,12 +2,17 @@
 """HIT RUN ON THE FIRST CELL TO DEFINE ALL THE FUNCTIONS"""
 
 #%%
-my_file = open("large_sample_size.txt", "r")
+my_file = open("full_wordle_list.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
 import random
+
 #%%
+
+my_file = open("large_sample_size.txt", "r")
+sample_list = my_file.read()
+sample_list = sample_list.split(",")
 # this returns a 5X5 list of the 5 most common letter in each spot
 def find_best_letter(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -20,7 +25,19 @@ def find_best_letter(sample_list):
                 my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
     my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
     return my_dictionary
-    
+
+def find_best_letter_in_given_spot(sample_list, spot):
+        alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+        my_dictionary={}
+        for letter in alphabet:
+            my_dictionary[letter]=0
+        for word in sample_list:
+            for x in range(0,len(alphabet)):
+                if alphabet[x]==word[spot]:
+                    my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
+        my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
+        return my_dictionary
+
 def best_5_letters_in_each_spot(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     letter_dictionary_first={}
@@ -42,7 +59,7 @@ def best_5_letters_in_each_spot(sample_list):
     letter_dictionary_fifth={}
     for letter in alphabet:
         letter_dictionary_fifth[letter]=0
-        
+
 
     for word in sample_list:
         for letter in alphabet:
@@ -59,7 +76,7 @@ def best_5_letters_in_each_spot(sample_list):
 
     def find_top_5(my_dictionary):
         sorted_dictionary=sorted(my_dictionary.items(), key=lambda x: x[1], reverse=True)
-        return sorted_dictionary[0:5]
+        return sorted_dictionary[0:10]
 
     best_first=find_top_5(letter_dictionary_first)
     best_second=find_top_5(letter_dictionary_second)
@@ -68,6 +85,7 @@ def best_5_letters_in_each_spot(sample_list):
     best_fifth=find_top_5(letter_dictionary_fifth)
     return [best_first, best_second, best_third, best_fourth, best_fifth]
 
+
 first_round=best_5_letters_in_each_spot(sample_list)
 print(first_round[0])
 print(first_round[1])
@@ -75,6 +93,11 @@ print(first_round[2])
 print(first_round[3])
 print(first_round[4])
 
+def all_black(word):
+        my_dict={}
+        for i in range(0,len(word)):
+            my_dict[i]=word[i]
+        return my_dict
 
 # this refines the list depending on the guess. 
 def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_list=None):
@@ -159,7 +182,7 @@ def find_best_letter_to_guess(best_letters_to_guess, already_guessed_letter):
                 position_of_final_letter=item
         list_of_best_final_position=best_letters_to_guess[position_of_final_letter]
         just_the_letters_of_final_position=[]
-        for x in range(0,5):
+        for x in range(0,10):
             if list_of_best_final_position[x][1] !=0:
 
                 just_the_letters_of_final_position.append(list_of_best_final_position[x][0])
@@ -444,4 +467,6 @@ while i<5:
 second_guesses= ['abler', 'acres', 'aimer', 'airer', 'amino', 'bally', 'belch', 'blame', 'blare', 'bless', 'bract', 'brass', 'calve', 'carry', 'carte', 'clots', 'cocks', 'corky', 'false', 'flats', 'flour', 'folly', 'gamer', 'gamin', 'golem', 'grate', 'homer', 'humpy', 'lamer', 'lapse', 'later', 'lawny', 'lilts', 'limos', 'local', 'loses', 'mains', 'malts', 'mango', 'manly', 'mares', 'marge', 'mashy', 'masse', 'mater', 'melon', 'melts', 'menus', 'merry', 'mesne', 'miler', 'mires', 'miter', 'molar', 'moles', 'molly', 'molts', 'monad', 'moral', 'morel', 'mosts', 'mothy', 'mussy', 'nails', 'nares', 'nears', 'oiler', 'pales', 'palmy', 'parer', 'pelts', 'pilau', 'plump', 'ramps', 'relay', 'rents', 'riles', 'roble', 'rower', 'rumps', 'saner', 'scalp', 'seals', 'seams', 'sheer', 'shell', 'shlep', 'sines', 'slams', 'slate', 'slier', 'slimy', 'smirk', 'smote', 'spilt', 'spire', 'splat', 'stamp', 'stare', 'stark', 'stout', 'table', 'talks', 'tarts', 'taste', 'tasty', 'tempo', 'terms', 'tomes', 'towel', 'trams', 'trite']
 
 print(len(second_guesses))
+# %%
+print(find_best_letter(sample_list))
 # %%
