@@ -1,5 +1,7 @@
 
 import argparse
+import time
+start_time = time.time()
 
 from numpy import False_
 
@@ -30,6 +32,8 @@ class SolveWordle():
         my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
         return my_dictionary
     
+
+    
     def best_5_letters_in_each_spot(self, sample_list):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
         letter_dictionary_first={}
@@ -52,7 +56,6 @@ class SolveWordle():
         for letter in alphabet:
             letter_dictionary_fifth[letter]=0
             
-
         for word in sample_list:
             for letter in alphabet:
                 if letter==word[0]:
@@ -65,10 +68,11 @@ class SolveWordle():
                     letter_dictionary_fourth[letter]=letter_dictionary_fourth[letter]+1
                 if letter==word[4]:
                     letter_dictionary_fifth[letter]=letter_dictionary_fifth[letter]+1
+        
 
         def find_top_5(my_dictionary):
             sorted_dictionary=sorted(my_dictionary.items(), key=lambda x: x[1], reverse=True)
-            return sorted_dictionary[0:5]
+            return sorted_dictionary[0:10]
 
         best_first=find_top_5(letter_dictionary_first)
         best_second=find_top_5(letter_dictionary_second)
@@ -147,7 +151,7 @@ class SolveWordle():
             for x in range(0,5):
                 if list_of_best_final_position[x][1] !=0:
                     just_the_letters_of_final_position.append(list_of_best_final_position[x][0])
-            dictionary_of_all_best_letters=self.full_letter_count
+            dictionary_of_all_best_letters=self.full_letter_count[position_of_final_letter]
             counts_of_final_letters={}
             for letter in just_the_letters_of_final_position:
                     counts_of_final_letters[letter]=dictionary_of_all_best_letters[letter]
@@ -312,6 +316,7 @@ class SolveWordle():
         # print("the goal word is", goal_word)
         guess=self.make_guess(self.sample_list)
         # print("the first guess is ", guess)
+        # print(goal_word)
         counter=1
         for i in range(0,1):
             First_Turn=self.take_turn(guess, goal_word, self.sample_list)
@@ -382,25 +387,43 @@ def main():
                 res.append(i)
         res.sort()
         return res
-
-    def find_best_letter(sample_list):
+    
+    def find_best_letter_in_given_spot(sample_list, spot):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
         my_dictionary={}
         for letter in alphabet:
             my_dictionary[letter]=0
         for word in sample_list:
             for x in range(0,len(alphabet)):
-                if alphabet[x] in word:
+                if alphabet[x]==word[spot]:
                     my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
         my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
         return my_dictionary
 
-    full_letter_count=find_best_letter(sample_list)
+    list_of_best_positional_letters=[]
+    for i in range(0,5):
+        list_of_best_positional_letters.append(find_best_letter_in_given_spot(sample_list, i))
+    
+
+
+    # def find_best_letter(sample_list):
+    #     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    #     my_dictionary={}
+    #     for letter in alphabet:
+    #         my_dictionary[letter]=0
+    #     for word in sample_list:
+    #         for x in range(0,len(alphabet)):
+    #             if alphabet[x] in word:
+    #                 my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
+    #     my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
+    #     return my_dictionary
+
+    # full_letter_count=find_best_letter(sample_list)
     list_of_turns=[]
     list_of_second_words=[]
     failed_words=[]
-    for i in range(0, 1):
-        count, second_word, final_guess=SolveWordle(sample_list, full_letter_count=full_letter_count, will_print=True, continue_greens=True).play_a_round()
+    for i in range(0, 100):
+        count, second_word, final_guess=SolveWordle(sample_list, full_letter_count=list_of_best_positional_letters, will_print=False, continue_greens=True).play_a_round()
         list_of_turns.append(count)
         list_of_second_words.append(second_word)
         if final_guess:
@@ -416,3 +439,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))
