@@ -2,11 +2,12 @@
 """HIT RUN ON THE FIRST CELL TO DEFINE ALL THE FUNCTIONS"""
 
 #%%
-my_file = open("large_sample_size.txt", "r")
+my_file = open("full_wordle_list.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
 import random
+
 #%%
 # this returns a 5X5 list of the 5 most common letter in each spot
 def find_best_letter(sample_list):
@@ -75,6 +76,11 @@ print(first_round[2])
 print(first_round[3])
 print(first_round[4])
 
+def all_black(word):
+        my_dict={}
+        for i in range(0,len(word)):
+            my_dict[i]=word[i]
+        return my_dict
 
 # this refines the list depending on the guess. 
 def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_list=None):
@@ -444,4 +450,6 @@ while i<5:
 second_guesses= ['abler', 'acres', 'aimer', 'airer', 'amino', 'bally', 'belch', 'blame', 'blare', 'bless', 'bract', 'brass', 'calve', 'carry', 'carte', 'clots', 'cocks', 'corky', 'false', 'flats', 'flour', 'folly', 'gamer', 'gamin', 'golem', 'grate', 'homer', 'humpy', 'lamer', 'lapse', 'later', 'lawny', 'lilts', 'limos', 'local', 'loses', 'mains', 'malts', 'mango', 'manly', 'mares', 'marge', 'mashy', 'masse', 'mater', 'melon', 'melts', 'menus', 'merry', 'mesne', 'miler', 'mires', 'miter', 'molar', 'moles', 'molly', 'molts', 'monad', 'moral', 'morel', 'mosts', 'mothy', 'mussy', 'nails', 'nares', 'nears', 'oiler', 'pales', 'palmy', 'parer', 'pelts', 'pilau', 'plump', 'ramps', 'relay', 'rents', 'riles', 'roble', 'rower', 'rumps', 'saner', 'scalp', 'seals', 'seams', 'sheer', 'shell', 'shlep', 'sines', 'slams', 'slate', 'slier', 'slimy', 'smirk', 'smote', 'spilt', 'spire', 'splat', 'stamp', 'stare', 'stark', 'stout', 'table', 'talks', 'tarts', 'taste', 'tasty', 'tempo', 'terms', 'tomes', 'towel', 'trams', 'trite']
 
 print(len(second_guesses))
+# %%
+print(find_best_letter(sample_list))
 # %%
