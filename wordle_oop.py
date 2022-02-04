@@ -5,10 +5,11 @@ start_time = time.time()
 
 from numpy import False_
 
-my_file = open("full_wordle_list.txt", "r")
-sample_list = my_file.read()
-sample_list = sample_list.split(",")
-
+# my_file = open("full_wordle_list.txt", "r")
+# my_file = open("large_sample_size.txt", "r")
+# sample_list = my_file.read()
+# sample_list = sample_list.split(",")
+from sample_wordle import sample_list
 import random
 
 class SolveWordle():
@@ -19,6 +20,7 @@ class SolveWordle():
         self.full_letter_count=full_letter_count
         self.will_print=will_print
         self.continue_greens=continue_greens
+        self.list_of_guesses=[]
     
     def find_best_letter(self, sample_list):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -142,6 +144,7 @@ class SolveWordle():
         list_of_positions_guessed=list(already_guessed_letter.keys())
 
         possible_positions=[0,1,2,3,4]
+        
         if len(list_of_letters_guessed)==4:
             for item in possible_positions:
                 if item not in list_of_positions_guessed:
@@ -159,15 +162,31 @@ class SolveWordle():
             current_best_letter=list(counts_of_final_letters.keys())[list(counts_of_final_letters.values()).index(largest_count)]
             current_best_letter_position=position_of_final_letter
         else:
+            
             for x in range(0,len(best_letters_to_guess)):
                 for i in range(0,4):
                     item=best_letters_to_guess[x]
-                    best_positional_letter=item[i]   
+                    best_positional_letter=item[i] 
+                    # positions
+                    
+                    # # letter
+                    # if best_positional_letter[1]>current_best_number and best_positional_letter[0] not in list_of_letters_guessed:
+                    #     current_best_number=best_positional_letter[1]
+                    #     current_best_letter_position=x
+                    #     current_best_letter=best_positional_letter[0]
+                
 
-                    if best_positional_letter[1]>current_best_number and best_positional_letter[0] not in list_of_letters_guessed:
+                    if  best_positional_letter[1]>current_best_number and x not in list_of_positions_guessed:
                         current_best_number=best_positional_letter[1]
                         current_best_letter_position=x
                         current_best_letter=best_positional_letter[0]
+
+                    # item_to_check={x:best_positional_letter[0]}
+                    # breakpoint()
+                    # if best_positional_letter[1]>current_best_number and item_to_check[x] not in already_guessed_letter[x]:
+                    #     current_best_number=best_positional_letter[1]
+                    #     current_best_letter_position=x
+                    #     current_best_letter=best_positional_letter[0]
         return {
             current_best_letter_position:current_best_letter
         }
@@ -177,7 +196,7 @@ class SolveWordle():
         best_letter_2=self.find_best_letter_to_guess(best_5_letters_to_guess, dictionary_of_letters_guessed)
         dictionary_of_letters_guessed.update(best_letter_2)
         refined_list=self.refine_list(best_letter_2, {}, {}, my_list)
-
+        
         return refined_list, dictionary_of_letters_guessed 
 
     def make_guess(self, list_of_words):
@@ -217,8 +236,8 @@ class SolveWordle():
 
         list_after_fifth_letter, list_of_letters_guessed=self.refine_after_letter_of_guess(list_after_forth_letter, list_of_letters_guessed)
         if len(list_after_fifth_letter)<=1:
-            # print("using 5 letters to guess")
             my_guess=list_after_fifth_letter[0]
+        self.list_of_guesses.append(my_guess)
         return my_guess
 
     def calculate_colors(self, correct_word, guessed_word):
@@ -283,10 +302,7 @@ class SolveWordle():
             print("my new guess is ", new_guess)
             print("_______________________________________________________________________")
 
-        # while (new_guess != goal_word):
-        #     print("dude")
-        #     breakpoint()
-        #     self.take_turn(new_guess, goal_word, list_of_words_to_guess)
+       
 
         
         return new_guess, goal_word, list_of_words_to_guess
@@ -353,7 +369,7 @@ class SolveWordle():
                 final_guess=Fifth_Turn[0]
                 if self.will_print:
                     print("YOU FAILED the goal was ", goal_word, "your final guess was ", final_guess )
-                return counter, First_Turn[0], goal_word
+                return counter, len(First_Turn[2]), goal_word
                 
             # SixthTurn=self.take_turn(Fifth_Turn[0], Fifth_Turn[1], Fifth_Turn[2])
             # counter+=1
@@ -366,10 +382,11 @@ class SolveWordle():
             #     if self.will_print:
             #         print("YOU FAILED the goal was ", goal_word, "your final guess was ", final_guess )
             #     return counter, First_Turn[0], goal_word
+        
         if self.will_print:
             print("you did it! it took you", counter, " turns. the goal was ", goal_word, "your final guess was ", final_guess )
             print("==============================================")
-        return counter, First_Turn[0], ""
+        return counter, len(First_Turn[2]), "" 
 
 def main():
     def cal_average(num):
@@ -404,38 +421,31 @@ def main():
     for i in range(0,5):
         list_of_best_positional_letters.append(find_best_letter_in_given_spot(sample_list, i))
     
-
-
-    # def find_best_letter(sample_list):
-    #     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-    #     my_dictionary={}
-    #     for letter in alphabet:
-    #         my_dictionary[letter]=0
-    #     for word in sample_list:
-    #         for x in range(0,len(alphabet)):
-    #             if alphabet[x] in word:
-    #                 my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
-    #     my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
-    #     return my_dictionary
-
-    # full_letter_count=find_best_letter(sample_list)
     list_of_turns=[]
-    list_of_second_words=[]
+    words_after_first_guess=[]
     failed_words=[]
-    for i in range(0, 100):
-        count, second_word, final_guess=SolveWordle(sample_list, full_letter_count=list_of_best_positional_letters, will_print=False, continue_greens=True).play_a_round()
+
+    continue_greens=True
+    will_print=False
+    goal_word=''
+    
+    for i in range(0, len(sample_list)):
+        # print(i)
+        goal_word=sample_list[i]
+        count, after_first_guess, final_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens).play_a_round()
         list_of_turns.append(count)
-        list_of_second_words.append(second_word)
+        words_after_first_guess.append(after_first_guess)
         if final_guess:
             failed_words.append(final_guess)
-    simple_list_of_second_words=common_elements(list_of_second_words)
-    print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
-    print("It guessed ", len(simple_list_of_second_words), "different second guesses")
-    print("The second guesses it took were ", simple_list_of_second_words)
+    average_words_after_first_guess=cal_average(words_after_first_guess)
+    if continue_greens:
+        print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
+    else:
+        print("when it DOES keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
+    print("It averaged  ", average_words_after_first_guess, "after the first  guesses")
     print("it failed to get it ", len(failed_words), " times")
     print("it couldn't guess", common_elements(failed_words))
-
-
+   
 
 if __name__ == "__main__":
     main()
