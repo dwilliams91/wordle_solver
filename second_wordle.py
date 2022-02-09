@@ -1,13 +1,29 @@
 #%%
+from calendar import c
 import time
+from itertools import permutations
+
 
 # from sample_wordle import sample_list
 
-my_file = open("full_wordle_list.txt", "r")
+my_file = open("wordle_answer.txt", "r")
 # my_file = open("large_sample_size.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
+
+my_file = open("full_wordle_list.txt", "r")
+full_wordle_guess_list=my_file.read()
+full_wordle_guess_list=full_wordle_guess_list.split(",")
+def bad_data_finder(sample_list):
+    bad_data=[]
+    good_data=[]
+    for item in sample_list:
+        if len(item)==5:
+            good_data.append(item)
+        else:
+            bad_data.append(item)
+    return bad_data
 
 def find_best_letter(sample_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -145,16 +161,94 @@ def what_eliminates_most_words(full_list, guess_list):
         for target_word in full_list:
             green, yellow, black= calculate_colors(target_word, guess_word)
             after_first_guess=refine_list(green, yellow, black, full_list)
-            
             guess_average.append(len(after_first_guess))
         word_dict[guess_word]=cal_average(guess_average)
     return word_dict
 
+def find_best_second_word(full_answer_list, first_guess):
+    alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    my_dictionary={}
+    for letter in alphabet:
+        my_dictionary[letter]=[]
+    guess_average_first=[]
+
+    for target_word in full_answer_list:
+        green, yellow, black= calculate_colors(target_word, first_guess)
+        after_first_guess=refine_list(green, yellow, black, full_answer_list)
+        guess_average_first.append(len(after_first_guess))
+
+        best_letters_after_1=find_best_letter(after_first_guess)
+        for letter in alphabet:
+
+            my_dictionary[letter].append(best_letters_after_1[letter])
+
+    for letter in alphabet:
+        my_dictionary[letter]=cal_average(my_dictionary[letter])
+    sorted_dict={k: v for k, v in sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True)}
+    for letter in first_guess:
+        del sorted_dict[letter]
+    return sorted_dict
+
+def what_eliminates_most_words_after_two_rounds(full_list, first_guess, second_guess):
+    word_dict={}
+    guess_average_first=[]
+    guess_average_second=[]
+
+    
+
+    for target_word in full_list:
+        green, yellow, black= calculate_colors(target_word, first_guess)
+        after_first_guess=refine_list(green, yellow, black, full_list)
+        guess_average_first.append(len(after_first_guess))
+
+        # best_letters_after_1=find_best_letter(after_first_guess)
+        # for letter in alphabet:
+
+        #     my_dictionary[letter].append(best_letters_after_1[letter])
+
+
+
+        green, yellow, black= calculate_colors(target_word, second_guess)
+        after_second_guess=refine_list(green, yellow, black, after_first_guess)
+        guess_average_second.append(len(after_second_guess))
+    # for letter in alphabet:
+    #     my_dictionary[letter]=cal_average(my_dictionary[letter])
+    # print(my_dictionary)
+
+    word_dict[first_guess]=cal_average(guess_average_first)
+    word_dict[second_guess]=cal_average(guess_average_second)
+    return word_dict
+
+
+
+
 # %%
 start_time = time.time()
-# guess_list=['bales', 'males', 'cores', 'stern', 'crane']
-guess_list=['irate', 'samey', 'rates']
-my_word_dict=what_eliminates_most_words(sample_list, guess_list)
+guess_list=['bales', 'males', 'cores', 'stern', 'crane', 'rates']
+# guess_list=['irate', 'samey', 'rates']
+# my_word_dict=what_eliminates_most_words(sample_list, guess_list)
+
+first_guess='crane'
+second_guess='toils'
+print(what_eliminates_most_words_after_two_rounds(sample_list, first_guess, second_guess))
+# print(find_best_second_word(sample_list, first_guess))
 print("--- %s seconds ---" % (time.time() - start_time))
 
-    # %%
+
+
+# %%
+# perms = [''.join(p) for p in permutations('stack')]
+
+def in_guess_list(full_list, word):
+    perms = [''.join(p) for p in permutations(word)]
+
+    possible_guesses=[]
+    for item in perms:
+        if item in full_list:
+            possible_guesses.append(item)
+    return possible_guesses
+
+in_guess_list(full_wordle_guess_list, 'lotis')
+
+
+# %%

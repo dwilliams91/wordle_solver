@@ -337,7 +337,8 @@ class SolveWordle():
             counter+=1
             if First_Turn[0]==First_Turn[1]:
                 final_guess=First_Turn[0]
-                break 
+                Second_Turn=False
+                break
             Second_Turn=self.take_turn(First_Turn[0], First_Turn[1], First_Turn[2])
             counter+=1
 
@@ -367,7 +368,7 @@ class SolveWordle():
                 final_guess=Fifth_Turn[0]
                 if self.will_print:
                     print("YOU FAILED the goal was ", goal_word, "your final guess was ", final_guess )
-                return counter, First_Turn[0], goal_word
+                return counter, First_Turn[0], goal_word, len(Second_Turn[2])
                 
             # SixthTurn=self.take_turn(Fifth_Turn[0], Fifth_Turn[1], Fifth_Turn[2])
             # counter+=1
@@ -384,8 +385,10 @@ class SolveWordle():
         if self.will_print:
             print("you did it! it took you", counter, " turns. the goal was ", goal_word, "your final guess was ", final_guess )
             print("==============================================")
-        
-        return counter, First_Turn[0], "" 
+        turn_to_capture=0
+        if Second_Turn:
+            turn_to_capture=len(Second_Turn[0])
+        return counter, First_Turn[0], "" , turn_to_capture
 
 def main():
     def cal_average(num):
@@ -422,28 +425,32 @@ def main():
         list_of_best_positional_letters.append(find_best_letter_in_given_spot(sample_list, i))
     
     list_of_turns=[]
-    words_after_first_guess=[]
+    second_guesses=[]
     failed_words=[]
+    list_after_first_guess=[]
 
-    continue_greens=False
+    continue_greens=True
     will_print=False
     goal_word=''
-    first_guess='rates'
+    first_guess=''
     
-    for i in range(0, len(sample_list)):
-        goal_word=sample_list[i]
-        count, after_first_guess, final_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess).play_a_round()
+    for i in range(0, 100):
+        # goal_word=sample_list[i]
+        count, second_guess, final_guess, length_after_first_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess).play_a_round()
         list_of_turns.append(count)
-        words_after_first_guess.append(after_first_guess)
+        second_guesses.append(second_guess)
         if final_guess:
             failed_words.append(final_guess)
+        list_after_first_guess.append(length_after_first_guess)
+
     if continue_greens:
         print("when it DOES keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
     else:
         print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
-    print("It's second guess was  ", common_elements(words_after_first_guess))
+    print("It's second guess was  ", common_elements(second_guesses))
     print("it failed to get it ", len(failed_words), " times")
     print("it couldn't guess", common_elements(failed_words))
+    print("after the first word, there were an average of ", cal_average(list_after_first_guess))
    
 
 if __name__ == "__main__":
