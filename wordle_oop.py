@@ -3,16 +3,15 @@ import argparse
 import time
 
 from numpy import integer
-start_time = time.time()
 from collections import Counter
 
 # my_file = open("full_wordle_list.txt", "r")
 
 # my_file = open("large_sample_size.txt", "r")
-my_file = open("wordle_answer.txt", "r")
+# my_file = open("wordle_answer.txt", "r")
 
-sample_list = my_file.read()
-sample_list = sample_list.split(",")
+# sample_list = my_file.read()
+# sample_list = sample_list.split(",")
 # from sample_wordle import sample_list
 import random
 
@@ -273,7 +272,6 @@ class SolveWordle():
 
     def take_turn(self, guess, goal_word, current_word_list):
         self.turn_number+=1
-        
         if self.continue_greens:
             colors=self.calculate_colors(goal_word, guess)
             list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
@@ -285,6 +283,7 @@ class SolveWordle():
                 if self.second_guess:
                     new_guess=self.second_guess
                 else:
+
                     new_guess=self.make_guess(list_of_words_to_guess)
                 colors=self.calculate_colors(goal_word, guess)
                 list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
@@ -292,6 +291,7 @@ class SolveWordle():
                 colors=self.calculate_colors(goal_word, guess)
                 list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
                 new_guess=self.make_guess(list_of_words_to_guess)
+        
 
         if self.will_print:
             print("turn", self.turn_number)
@@ -330,7 +330,7 @@ class SolveWordle():
         if self.goal_word:
             goal_word=self.goal_word
         else:
-            goal_word=sample_list[random_index]
+            goal_word=self.sample_list[random_index]
 
         if self.first_guess:
             guess=self.first_guess
@@ -396,89 +396,134 @@ class SolveWordle():
             turn_to_capture=len(Second_Turn[0])
         return counter, First_Turn[0], "" , turn_to_capture
     
+class RunTest(SolveWordle):
+    def __init__(self, sample_list=None, full_letter_count=None):
+        self.sample_list=sample_list
+        self.full_letter_count=full_letter_count
 
-def run_test():
-    def convert_inputs(my_input):
-        if my_input.lower()=='y':
-            return True
-        elif my_input.lower()=='n':
-            return False
+
+    def run_test(self, sample_list):
+        def convert_inputs(my_input):
+            if my_input.lower()=='y':
+                return True
+            elif my_input.lower()=='n':
+                return False
+            
+        def cal_average(num):
+            sum_num = 0
+            for t in num:
+                sum_num = sum_num + t           
+
+            avg = sum_num / len(num)
+            return avg
+
+        def common_elements(test_list):
+            res = []
+            result = sorted(test_list, key = test_list.count,
+                                    reverse = True)
+            for i in result:
+                if i not in res:
+                    res.append(i)
+            return res
         
-    def cal_average(num):
-        sum_num = 0
-        for t in num:
-            sum_num = sum_num + t           
+        
+        list_of_turns=[]
+        second_guesses=[]
+        failed_words=[]
+        list_after_first_guess=[]
+        first_word_for_dataset=self.make_guess(sample_list)
 
-        avg = sum_num / len(num)
-        return avg
+        continue_greens= convert_inputs(input("continue greens for second word?(y/n) "))
+        will_print= convert_inputs(input("print each round?(y/n) "))
 
-    def common_elements(test_list):
-        res = []
-        result = sorted(test_list, key = test_list.count,
-                                reverse = True)
-        for i in result:
-            if i not in res:
-                res.append(i)
-        return res
-    
+        goal_word= input("specific goal word? ")
+        first_guess=input(f'The default first word for the dataset is {first_word_for_dataset}. Pick specific first word? ')
+        second_guess=input("specific second word? ")
+        full_diagnostic= convert_inputs(input("Full diagnostic?((y/n)) "))
+
+        if full_diagnostic==False:
+            number_of_tests=int(input("number of tests "))
+        else:
+            number_of_tests=len(sample_list)
+        
+        start_time = time.time()
+
+        for i in range(0, number_of_tests):
+            if full_diagnostic:
+                goal_word=sample_list[i]
+            count, my_second_guess, final_guess, length_after_first_guess =SolveWordle(sample_list=sample_list, goal_word=goal_word, full_letter_count=self.full_letter_count, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess, second_guess=second_guess).play_a_round()
+            list_of_turns.append(count)
+            second_guesses.append(my_second_guess)
+            if final_guess:
+                failed_words.append(final_guess)
+            list_after_first_guess.append(length_after_first_guess)
+
+        if continue_greens:
+            print("when it DOES keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
+        else:
+            print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
+        # print("It's second guess was  ", common_elements(second_guesses))
+        print("it failed to get it ", len(failed_words), " times")
+        # print("it couldn't guess", common_elements(failed_words))
+        print("after the second word, there were an average of ", cal_average(list_after_first_guess))
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+
+def find_best_letter_in_given_spot(sample_list, spot):
+            alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+            my_dictionary={}
+            for letter in alphabet:
+                my_dictionary[letter]=0
+            for word in sample_list:
+                for x in range(0,len(alphabet)):
+                    if alphabet[x]==word[spot]:
+                        my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
+            my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
+            return my_dictionary
+
+def main():
+    def input_list():
+        print("What list?")
+        print("1) 2000 non-wordle")
+        print("2) 2000 wordle answers")
+        print("3) 5000 larger")
+        print("4) 12000 full wordle answer")
+        my_list=input()
+
+        if my_list=='1':
+            my_file = open("small_sample_size.txt", "r")
+        elif my_list=='2':
+            my_file = open("wordle_answer.txt", "r")
+        elif my_list=='3':
+            my_file = open("large_sample_size.txt", "r")
+        elif my_list=='4':
+            my_file = open("full_wordle_list.txt", "r")
+
+        if my_file:
+            sample_list = my_file.read()
+            sample_list = sample_list.split(",")
+        return sample_list
+    sample_list=input_list()
+
     def find_best_letter_in_given_spot(sample_list, spot):
-        alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-        my_dictionary={}
-        for letter in alphabet:
-            my_dictionary[letter]=0
-        for word in sample_list:
-            for x in range(0,len(alphabet)):
-                if alphabet[x]==word[spot]:
-                    my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
-        my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
-        return my_dictionary
+            alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+            my_dictionary={}
+            for letter in alphabet:
+                my_dictionary[letter]=0
+            for word in sample_list:
+                for x in range(0,len(alphabet)):
+                    if alphabet[x]==word[spot]:
+                        my_dictionary[alphabet[x]]=my_dictionary[alphabet[x]]+1
+            my_dictionary=dict(sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True))
+            return my_dictionary
 
     list_of_best_positional_letters=[]
     for i in range(0,5):
         list_of_best_positional_letters.append(find_best_letter_in_given_spot(sample_list, i))
     
-    list_of_turns=[]
-    second_guesses=[]
-    failed_words=[]
-    list_after_first_guess=[]
+    Instantiate=RunTest(full_letter_count=list_of_best_positional_letters)
 
-    continue_greens= convert_inputs(input("continue greens for second word?(y/n) "))
-    will_print= convert_inputs(input("print each round?(y/n) "))
-
-    goal_word= input("specific goal word? ")
-    first_guess=input("specific first word? ")
-    second_guess=input("specific second word? ")
-    full_diagnostic= convert_inputs(input("Full diagnostic?((y/n)) "))
-
-    if full_diagnostic==False:
-        number_of_tests=int(input("number of tests "))
-    else:
-        number_of_tests=len(sample_list)
-    
-    for i in range(0, number_of_tests):
-        if full_diagnostic:
-            goal_word=sample_list[i]
-        count, my_second_guess, final_guess, length_after_first_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess, second_guess=second_guess).play_a_round()
-        list_of_turns.append(count)
-        second_guesses.append(my_second_guess)
-        if final_guess:
-            failed_words.append(final_guess)
-        list_after_first_guess.append(length_after_first_guess)
-
-    if continue_greens:
-        print("when it DOES keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
-    else:
-        print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
-    # print("It's second guess was  ", common_elements(second_guesses))
-    print("it failed to get it ", len(failed_words), " times")
-    # print("it couldn't guess", common_elements(failed_words))
-    print("after the second word, there were an average of ", cal_average(list_after_first_guess))
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-
-
-def main():
-    run_test()
+    Instantiate.run_test(sample_list)
 
    
 
