@@ -2,3 +2,5 @@ continue green, default starting word 4.272537780093799, Failed 409 times, corky
 continue greens, 'rates' starting word, 4.266110821608477, failed 420 times, golly second guess, 63 second
 not continuing greens, default starting word, 4.279485843321174, failed 306  times, corky second guess, 745 seconds
 not continuing greens, 'rates' starting word 4.432690637484801, failed 413  times, corky second guess, 436 seconds
+not continuing greens, 'rates' starting word, 'noily' second word, 4.206357477853048, failed 364  times, 
+not continuing greens, 'cranes starting word, 'toils' second word, 4.120548896994963, failed 315

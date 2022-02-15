@@ -1,5 +1,4 @@
 #%%
-from calendar import c
 import time
 from itertools import permutations
 
@@ -77,6 +76,7 @@ elimante_most_words(sample_list)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 # %%
+
 def calculate_colors(correct_word, guessed_word):
     green_dict={}
     yellow_dict={}
@@ -144,7 +144,18 @@ def refine_list(green_letters=None, yellow_letters=None, black_letters=None, my_
 
         
         return list(remove_black_letters)
-#%%
+
+def in_guess_list(full_list, word):
+    perms = [''.join(p) for p in permutations(word)]
+
+    possible_guesses=[]
+    for item in perms:
+        item=item[0:5]
+        if item in full_list:
+            possible_guesses.append(item)
+    return possible_guesses
+
+
 def cal_average(num):
         sum_num = 0
         for t in num:
@@ -165,7 +176,7 @@ def what_eliminates_most_words(full_list, guess_list):
         word_dict[guess_word]=cal_average(guess_average)
     return word_dict
 
-def find_best_second_word(full_answer_list, first_guess):
+def find_best_second_word(full_answer_list, first_guess, full_guess_list):
     alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     my_dictionary={}
     for letter in alphabet:
@@ -187,6 +198,9 @@ def find_best_second_word(full_answer_list, first_guess):
     sorted_dict={k: v for k, v in sorted(my_dictionary.items(), key=lambda item: item[1], reverse=True)}
     for letter in first_guess:
         del sorted_dict[letter]
+    list_of_best_letters_left=list(sorted_dict.keys())
+    print(list_of_best_letters_left)
+    print(in_guess_list(full_guess_list,list_of_best_letters_left[0:6]))
     return sorted_dict
 
 def what_eliminates_most_words_after_two_rounds(full_list, first_guess, second_guess):
@@ -226,12 +240,19 @@ def what_eliminates_most_words_after_two_rounds(full_list, first_guess, second_g
 start_time = time.time()
 guess_list=['bales', 'males', 'cores', 'stern', 'crane', 'rates']
 # guess_list=['irate', 'samey', 'rates']
+good_guesses={
+    "crane":"toils",
+    "rates":"noily",
+    "bales":"nitro",
+    "cores": "laity",
+    "irate": 'sonly',
+}
 # my_word_dict=what_eliminates_most_words(sample_list, guess_list)
 
-first_guess='crane'
-second_guess='toils'
+first_guess='irate'
+second_guess='nouls'
 print(what_eliminates_most_words_after_two_rounds(sample_list, first_guess, second_guess))
-# print(find_best_second_word(sample_list, first_guess))
+# print(find_best_second_word(sample_list, first_guess, full_wordle_guess_list))
 print("--- %s seconds ---" % (time.time() - start_time))
 
 
@@ -248,7 +269,7 @@ def in_guess_list(full_list, word):
             possible_guesses.append(item)
     return possible_guesses
 
-in_guess_list(full_wordle_guess_list, 'lotis')
+in_guess_list(full_wordle_guess_list, 'loti')
 
 
 # %%

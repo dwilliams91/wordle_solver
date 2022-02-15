@@ -1,20 +1,23 @@
 
 import argparse
 import time
+
+from numpy import integer
 start_time = time.time()
 from collections import Counter
 
-from numpy import False_
 # my_file = open("full_wordle_list.txt", "r")
 
-my_file = open("large_sample_size.txt", "r")
+# my_file = open("large_sample_size.txt", "r")
+my_file = open("wordle_answer.txt", "r")
+
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 # from sample_wordle import sample_list
 import random
 
 class SolveWordle():
-    def __init__(self, sample_list, goal_word=None, turn_number=0, full_letter_count=None, will_print=False, continue_greens=True, first_guess=None):
+    def __init__(self, sample_list, goal_word=None, turn_number=0, full_letter_count=None, will_print=False, continue_greens=True, first_guess=None, second_guess=None):
         self.sample_list=sample_list
         self.goal_word=goal_word
         self.turn_number=turn_number
@@ -22,6 +25,7 @@ class SolveWordle():
         self.will_print=will_print
         self.continue_greens=continue_greens
         self.first_guess=first_guess
+        self.second_guess=second_guess
     
     def find_best_letter(self, sample_list):
         alphabet=["a","b","c","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -278,7 +282,10 @@ class SolveWordle():
             if self.turn_number==1:
                 all_black=self.all_black(self.make_guess(self.sample_list))
                 list_of_words_to_guess=self.refine_list({}, {}, all_black, self.sample_list)
-                new_guess=self.make_guess(list_of_words_to_guess)
+                if self.second_guess:
+                    new_guess=self.second_guess
+                else:
+                    new_guess=self.make_guess(list_of_words_to_guess)
                 colors=self.calculate_colors(goal_word, guess)
                 list_of_words_to_guess=self.refine_list(colors[0], colors[1], colors[2], current_word_list)
             else:
@@ -295,7 +302,6 @@ class SolveWordle():
             print("black", colors[2])
             print("there are ", len(list_of_words_to_guess), " words left")
             print("this is the list of words ",list_of_words_to_guess)
-
 
             print("my new guess is ", new_guess)
             print("_______________________________________________________________________")
@@ -389,8 +395,15 @@ class SolveWordle():
         if Second_Turn:
             turn_to_capture=len(Second_Turn[0])
         return counter, First_Turn[0], "" , turn_to_capture
+    
 
-def main():
+def run_test():
+    def convert_inputs(my_input):
+        if my_input.lower()=='y':
+            return True
+        elif my_input.lower()=='n':
+            return False
+        
     def cal_average(num):
         sum_num = 0
         for t in num:
@@ -429,16 +442,25 @@ def main():
     failed_words=[]
     list_after_first_guess=[]
 
-    continue_greens=True
-    will_print=False
-    goal_word=''
-    first_guess=''
+    continue_greens= convert_inputs(input("continue greens for second word?(y/n) "))
+    will_print= convert_inputs(input("print each round?(y/n) "))
+
+    goal_word= input("specific goal word? ")
+    first_guess=input("specific first word? ")
+    second_guess=input("specific second word? ")
+    full_diagnostic= convert_inputs(input("Full diagnostic?((y/n)) "))
+
+    if full_diagnostic==False:
+        number_of_tests=int(input("number of tests "))
+    else:
+        number_of_tests=len(sample_list)
     
-    for i in range(0, 100):
-        # goal_word=sample_list[i]
-        count, second_guess, final_guess, length_after_first_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess).play_a_round()
+    for i in range(0, number_of_tests):
+        if full_diagnostic:
+            goal_word=sample_list[i]
+        count, my_second_guess, final_guess, length_after_first_guess =SolveWordle(sample_list, goal_word=goal_word, full_letter_count=list_of_best_positional_letters, will_print=will_print, continue_greens=continue_greens, first_guess=first_guess, second_guess=second_guess).play_a_round()
         list_of_turns.append(count)
-        second_guesses.append(second_guess)
+        second_guesses.append(my_second_guess)
         if final_guess:
             failed_words.append(final_guess)
         list_after_first_guess.append(length_after_first_guess)
@@ -447,12 +469,19 @@ def main():
         print("when it DOES keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
     else:
         print("when it DOESN'T keep greens or yellows it took", cal_average(list_of_turns), " turns to get it right")
-    print("It's second guess was  ", common_elements(second_guesses))
+    # print("It's second guess was  ", common_elements(second_guesses))
     print("it failed to get it ", len(failed_words), " times")
-    print("it couldn't guess", common_elements(failed_words))
-    print("after the first word, there were an average of ", cal_average(list_after_first_guess))
+    # print("it couldn't guess", common_elements(failed_words))
+    print("after the second word, there were an average of ", cal_average(list_after_first_guess))
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+def main():
+    run_test()
+
    
 
 if __name__ == "__main__":
     main()
-    print("--- %s seconds ---" % (time.time() - start_time))
+    # print("--- %s seconds ---" % (time.time() - start_time))
