@@ -5,8 +5,8 @@ from itertools import permutations
 
 # from sample_wordle import sample_list
 
-my_file = open("wordle_answer.txt", "r")
-# my_file = open("large_sample_size.txt", "r")
+# my_file = open("wordle_answer.txt", "r")
+my_file = open("large_sample_size.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
@@ -251,8 +251,9 @@ good_guesses={
 
 first_guess='irate'
 second_guess='nouls'
-print(what_eliminates_most_words_after_two_rounds(sample_list, first_guess, second_guess))
+# print(what_eliminates_most_words_after_two_rounds(sample_list, first_guess, second_guess))
 # print(find_best_second_word(sample_list, first_guess, full_wordle_guess_list))
+print(what_eliminates_most_words(sample_list, guess_list))
 print("--- %s seconds ---" % (time.time() - start_time))
 
 

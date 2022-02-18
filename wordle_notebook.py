@@ -9,8 +9,9 @@ sample_list = sample_list.split(",")
 import random
 
 #%%
+import random
 
-my_file = open("large_sample_size.txt", "r")
+my_file = open("wordle_answer.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 # this returns a 5X5 list of the 5 most common letter in each spot
@@ -391,11 +392,11 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 
 
 results_after_guess=[
-    {"b":"m"},
-    {"b":"a"},
-    {"b":"l"},
-    {"b":"e"},
-    {"b":"s"}
+    {"g":"c"},
+    {"b":"r"},
+    {"y":"a"},
+    {"b":"n"},
+    {"b":"e"}
 ]
 turn_1_results=type_outcome_faster(results_after_guess)
 print(turn_1_results[0])
@@ -406,7 +407,7 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"g":"s"},
+    {"g":"t"},
     {"b":"t"},
     {"g":"a"},
     {"g":"r"},
