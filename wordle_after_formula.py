@@ -51,7 +51,7 @@ print(my_result)
 
     
 # %%
-my_file = open("small_sample_size.txt", "r")
+my_file = open("large_sample_size.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
@@ -101,7 +101,7 @@ def CountFrequency(my_list):
             freq[item] = 1
     return freq
 
-def calculate_entropy(count_dict, combinations):
+def calculate_entropy(count_dict):
     return_dictionary={}
     count_dict.keys()
     for word in count_dict.keys():
@@ -116,22 +116,73 @@ def calculate_entropy(count_dict, combinations):
 
 start_time = time.time()    
 
-count=calculate_counts_for_entropy(guess_list, sample_list)
-entropy=calculate_entropy(count, my_result)
-print(entropy)
+count=calculate_counts_for_entropy(sample_list, sample_list)
+entropy=calculate_entropy(count)
 print("--- %s seconds ---" % (time.time() - start_time))
-
-#%%
-x=[0,1,2]
-y=str(x)
 
 
 # %%
-{
-    "bales":{
-                [0, 0, 2, 1, 0]:2,
-                [0, 2, 0, 0, 0]:1,
-                [0, 2, 0, 0, 0]:1,
-            }
+import json
 
-}
+# json.dumps(entropy)
+# f=open("calculated_entropy.txt", "a")
+# f.write(str(entropy))
+# f.close()
+
+# print("done")
+# START HERE
+# %%
+import json
+from ast import literal_eval
+import itertools
+
+f=open("calculated_entropy.txt")
+test_string=f.read()
+pulled_entropy = json.loads(test_string)
+# print(type(res))
+#%%
+N = 5 # number of objects (e.g. slots)
+possible_values = [0,1,2]
+
+all_combinations = list(itertools.product(possible_values, repeat=N))
+def fix_combinations(list_of_sets):
+    return_list=[]
+    for item in list_of_sets:
+        item=list(item)
+        return_list.append(str(item))
+    return return_list
+all_combinations=fix_combinations(all_combinations)
+
+# list(res['bales'])[0]
+# print(type(my_array))
+# dude=literal_eval(my_array)
+# %%
+# how probable is it-- entropy['bales'][pattern]
+import math
+
+def cal_average(num):
+    sum_num = 0
+    for t in num:
+        sum_num = sum_num + t           
+
+    avg = sum_num / len(num)
+    return avg
+
+def log_formula(x):
+    return math.log(1/x,2)
+
+def final_formula(word, probability_list, combinations):
+    empty_sum=[]
+    word_combination=probability_list[word]
+    for combination in combinations:
+        if combination in list(word_combination.keys()):
+            empty_sum.append(word_combination[combination]/5700)
+            # entropy=log_formula(word_combination[combination]/5700)
+            # empty_sum.append(entropy)
+    return empty_sum
+
+
+word='ovals'
+final_formula(word, pulled_entropy, all_combinations)
+
+# %%
