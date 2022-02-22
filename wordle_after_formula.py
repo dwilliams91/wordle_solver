@@ -2,7 +2,7 @@
 # %%
 import time
 
-my_file = open("large_sample_size.txt", "r")
+my_file = open("full_wordle_list.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
@@ -32,14 +32,14 @@ guess_list=['bales', 'males', 'cores', 'stern', 'crane', 'rates']
 
 
 
-print("--- %s seconds ---" % (time.time() - start_time))
+# print("--- %s seconds ---" % (time.time() - start_time))
 
 
 # %%
 def formula(x):
     return math.log(1/x,2)
 
-print(formula(8))
+# print(formula(8))
 # %%
 import itertools
 N = 5 # number of objects (e.g. slots)
@@ -47,11 +47,11 @@ possible_values = [0,1,2]
 
 my_result = list(itertools.product(possible_values, repeat=N))
 
-print(my_result)
+# print(my_result)
 
     
 # %%
-my_file = open("large_sample_size.txt", "r")
+my_file = open("full_wordle_list.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
@@ -118,16 +118,22 @@ start_time = time.time()
 
 count=calculate_counts_for_entropy(sample_list, sample_list)
 entropy=calculate_entropy(count)
-print("--- %s seconds ---" % (time.time() - start_time))
+# print("--- %s seconds ---" % (time.time() - start_time))
 
 
 # %%
 import json
 
-# json.dumps(entropy)
-# f=open("calculated_entropy.txt", "a")
-# f.write(str(entropy))
-# f.close()
+# single_quote_string=json.dumps(entropy)
+will_this_work=str(entropy).replace("'", "\"")
+#%%
+
+
+
+#%%
+f=open("full_calculated_possibilities.txt", "a")
+f.write(will_this_work)
+f.close()
 
 # print("done")
 # START HERE
@@ -140,8 +146,7 @@ f=open("calculated_entropy.txt")
 test_string=f.read()
 pulled_entropy = json.loads(test_string)
 # print(type(res))
-#%%
-N = 5 # number of objects (e.g. slots)
+
 possible_values = [0,1,2]
 
 all_combinations = list(itertools.product(possible_values, repeat=N))
@@ -153,10 +158,7 @@ def fix_combinations(list_of_sets):
     return return_list
 all_combinations=fix_combinations(all_combinations)
 
-# list(res['bales'])[0]
-# print(type(my_array))
-# dude=literal_eval(my_array)
-# %%
+
 # how probable is it-- entropy['bales'][pattern]
 import math
 
@@ -179,10 +181,12 @@ def final_formula(word, probability_list, combinations):
             empty_sum.append(word_combination[combination]/5700)
             # entropy=log_formula(word_combination[combination]/5700)
             # empty_sum.append(entropy)
+    
+    print(sum(empty_sum))
     return empty_sum
 
 
 word='ovals'
-final_formula(word, pulled_entropy, all_combinations)
-
+what_the_output=final_formula(word, pulled_entropy, all_combinations)
+print("dude")
 # %%

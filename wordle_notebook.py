@@ -392,9 +392,9 @@ THE VALUES ARE THE LETTERS OF YOUR GUESS IN ORDER
 
 
 results_after_guess=[
-    {"g":"c"},
-    {"b":"r"},
-    {"y":"a"},
+    {"b":"c"},
+    {"y":"r"},
+    {"b":"a"},
     {"b":"n"},
     {"b":"e"}
 ]
@@ -407,11 +407,11 @@ print(turn_1)
 make_guess(turn_1)
 # %%
 results_after_guess=[
-    {"g":"t"},
     {"b":"t"},
-    {"g":"a"},
-    {"g":"r"},
-    {"b":"k"}
+    {"y":"o"},
+    {"y":"i"},
+    {"b":"l"},
+    {"b":"s"}
 ]
 turn_2_results=type_outcome_faster(results_after_guess)
 
