@@ -35,18 +35,23 @@ class WordleFormula():
         return avg
 
     def log_formula(self, x):
-        return math.log(1/x,2)
+        return math.log2(1/x)
 
     def final_formula(self):
-        empty_sum=[]
+        bit_sum=[]
+        possibility_sum=[]
+        combination_dictionary={}
         word_combination=self.possibility_list[self.word]
         for combination in self.all_combinations:
             if combination in list(word_combination.keys()):
                 # empty_sum.append(word_combination[combination]/5700)
-                entropy=self.log_formula(word_combination[combination]/5700)
-                empty_sum.append(entropy)
+                entropy=self.log_formula(word_combination[combination]/12897)
+                bit_sum.append(entropy)
+                possibility_sum.append((word_combination[combination]/12897)*entropy)
+
+                combination_dictionary[combination]=entropy
         breakpoint()
-        return self.cal_average(empty_sum)
+        return self.cal_average(bit_sum)
 
 
 
