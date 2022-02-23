@@ -7,7 +7,7 @@ f=open("full_calculated_possibilities.txt")
 test_string=f.read()
 possibility_list = json.loads(test_string)
 
-my_file = open("large_sample_size.txt", "r")
+my_file = open("full_wordle_list.txt", "r")
 
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
@@ -40,7 +40,8 @@ class WordleFormula():
     def final_formula(self):
         bit_sum=[]
         possibility_sum=[]
-        combination_dictionary={}
+        bit_dictionary={}
+        
         word_combination=self.possibility_list[self.word]
         for combination in self.all_combinations:
             if combination in list(word_combination.keys()):
@@ -49,9 +50,7 @@ class WordleFormula():
                 bit_sum.append(entropy)
                 possibility_sum.append((word_combination[combination]/12897)*entropy)
 
-                combination_dictionary[combination]=entropy
-        breakpoint()
-        return self.cal_average(bit_sum)
+        return  sum(possibility_sum)
 
 
 
@@ -59,12 +58,20 @@ def main():
     N=5
     possible_values = [0,1,2]
     all_combinations = list(itertools.product(possible_values, repeat=N))
-    word='weary'
-    instantiated=WordleFormula(word, sample_list=sample_list, possibility_list=possibility_list, all_combinations=all_combinations)
 
-    word_entropy=instantiated.final_formula()
+    empty_dictionary={}
+    for word in sample_list:
+        instantiated=WordleFormula(word, sample_list=sample_list, possibility_list=possibility_list, all_combinations=all_combinations)
+        bits=instantiated.final_formula()
+        empty_dictionary[word]=bits
+        print(word, bits)
 
-    print(word, word_entropy)
+    empty_dictionary=json.dumps(empty_dictionary)
+
+    f=open("total_bits.txt", "a")
+    f.write(empty_dictionary)
+    f.close()
+
    
 
 if __name__ == "__main__":
