@@ -68,13 +68,10 @@ my_result = list(itertools.product(possible_values, repeat=N))
 
 guess_list=['bales', 'males', 'cores', 'stern', 'crane', 'rates']
 # sample_list=["hello", "telod", "hello", "baldy"]
-def calculate_counts_for_entropy(guess_list, sample_list):
-    
+def calculate_combinations_for_list(guess_list, sample_list):
     full_guess_dict={}
-
     for guess in guess_list:
         full_guess_dict[guess]=[]
-
     for guess in guess_list:
         for word in sample_list:
             colors_for_guess=[]
@@ -86,7 +83,6 @@ def calculate_counts_for_entropy(guess_list, sample_list):
                 else:
                     colors_for_guess.append(0)
             full_guess_dict[guess].append(colors_for_guess)    
-
     return full_guess_dict
 
 def CountFrequency(my_list):
@@ -116,7 +112,7 @@ def calculate_entropy(count_dict):
 
 start_time = time.time()    
 
-count=calculate_counts_for_entropy(sample_list, sample_list)
+count=calculate_combinations_for_list(sample_list, sample_list)
 entropy=calculate_entropy(count)
 # print("--- %s seconds ---" % (time.time() - start_time))
 
@@ -189,4 +185,34 @@ def final_formula(word, probability_list, combinations):
 word='ovals'
 what_the_output=final_formula(word, pulled_entropy, all_combinations)
 print("dude")
+# %%
+my_file = open("small_sample_size.txt", "r")
+
+sample_list = my_file.read()
+sample_list = sample_list.split(",")
+import time
+
+def calculate_combinations_for_list(guess_list, sample_list):
+    full_guess_dict={}
+    for guess in guess_list:
+        full_guess_dict[guess]=[]
+    for guess in guess_list:
+        for word in sample_list:
+            colors_for_guess=[]
+            for i in range(0,len(guess)):
+                if guess[i]==word[i]:         
+                    colors_for_guess.append(2)
+                elif guess[i] in word and guess[i]!=word[i]:
+                    colors_for_guess.append(1)
+                else:
+                    colors_for_guess.append(0)
+            full_guess_dict[guess].append(str(colors_for_guess))    
+    return full_guess_dict
+# start_time = time.time()
+# print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+
+
 # %%

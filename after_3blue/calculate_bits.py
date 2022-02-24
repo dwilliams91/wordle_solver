@@ -12,8 +12,8 @@ my_file = open("full_wordle_list.txt", "r")
 sample_list = my_file.read()
 sample_list = sample_list.split(",")
 
-class WordleFormula():
-    def __init__(self, word=None, sample_list=sample_list, possibility_list=possibility_list, all_combinations=None):
+class CalculateBits():
+    def __init__(self, word=None, possibility_list=possibility_list, all_combinations=None):
         self.word=word
         self.sample_list=sample_list
         self.possibility_list=possibility_list
@@ -25,14 +25,6 @@ class WordleFormula():
             item=list(item)
             return_list.append(str(item))
         return return_list
-
-    def cal_average(self, num):
-        sum_num = 0
-        for t in num:
-            sum_num = sum_num + t           
-
-        avg = sum_num / len(num)
-        return avg
 
     def log_formula(self, x):
         return math.log2(1/x)
@@ -61,16 +53,16 @@ def main():
 
     empty_dictionary={}
     for word in sample_list:
-        instantiated=WordleFormula(word, sample_list=sample_list, possibility_list=possibility_list, all_combinations=all_combinations)
+        instantiated=CalculateBits(word, sample_list=sample_list, possibility_list=possibility_list, all_combinations=all_combinations)
         bits=instantiated.final_formula()
         empty_dictionary[word]=bits
         print(word, bits)
 
-    empty_dictionary=json.dumps(empty_dictionary)
+    # empty_dictionary=json.dumps(empty_dictionary)
 
-    f=open("total_bits.txt", "a")
-    f.write(empty_dictionary)
-    f.close()
+    # f=open("total_bits.txt", "a")
+    # f.write(empty_dictionary)
+    # f.close()
 
    
 
